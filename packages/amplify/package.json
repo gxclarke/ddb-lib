@@ -1,0 +1,42 @@
+{
+  "name": "@ddb-lib/amplify",
+  "version": "0.1.0",
+  "description": "AWS Amplify Gen 2 integration for DynamoDB monitoring and best practices",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rsbuild build && tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "test": "rstest run",
+    "test:watch": "rstest watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "dynamodb",
+    "amplify",
+    "aws-amplify",
+    "monitoring",
+    "statistics",
+    "gen2"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ddb-lib/core": "workspace:*",
+    "@ddb-lib/stats": "workspace:*"
+  },
+  "peerDependencies": {
+    "aws-amplify": "^6.0.0"
+  },
+  "sideEffects": false
+}

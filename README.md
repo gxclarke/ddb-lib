@@ -1,466 +1,272 @@
 # ddb-lib
 
-A lightweight TypeScript wrapper for AWS DynamoDB that simplifies the API while maintaining flexibility. Built with type safety, best practices, and developer experience in mind.
+A modular TypeScript library for AWS DynamoDB that provides best practices, pattern helpers, and performance monitoring. Works seamlessly with both standalone DynamoDB and AWS Amplify Gen 2.
 
-## Features
+## 📦 Packages
 
-- **Simplified API**: Clean, intuitive interface for DynamoDB operations
-- **Type Safety**: Full TypeScript support with type inference
-- **Schema Validation**: Optional runtime validation with strong typing
-- **DynamoDB Patterns**: First-class support for single-table design, composite keys, and access patterns
-- **Multi-Attribute Keys**: Native support for DynamoDB's multi-attribute composite keys in GSIs
-- **Performance Monitoring**: Built-in statistics collection and recommendations
-- **Best Practices**: Automatic detection of anti-patterns and optimization opportunities
+This is a monorepo containing multiple packages that can be used independently or together:
 
-## Installation
+| Package | Description | Use Case |
+|---------|-------------|----------|
+| [@ddb-lib/core](./packages/core) | Pure utility functions for DynamoDB patterns | Pattern helpers, multi-attribute keys, expression builders |
+| [@ddb-lib/stats](./packages/stats) | Performance monitoring and recommendations | Statistics collection, anti-pattern detection |
+| [@ddb-lib/client](./packages/client) | Full-featured DynamoDB client | Standalone DynamoDB applications |
+| [@ddb-lib/amplify](./packages/amplify) | AWS Amplify Gen 2 integration | Amplify applications with monitoring |
+
+## 🚀 Quick Start
+
+### For Standalone DynamoDB
+
+Install the client package (includes core and stats):
 
 ```bash
-npm install ddb-lib
+npm install @ddb-lib/client
 ```
 
-## Quick Start
-
 ```typescript
-import { TableClient } from 'ddb-lib'
+import { TableClient } from '@ddb-lib/client'
+import { PatternHelpers } from '@ddb-lib/core'
 
-// Create a table client
 const table = new TableClient({
   tableName: 'my-table',
-  region: 'us-east-1'
+  region: 'us-east-1',
+  statsConfig: { enabled: true }
 })
 
-// Basic operations
-await table.put({ pk: 'USER#123', sk: 'PROFILE', name: 'Alice', email: 'alice@example.com' })
-const user = await table.get({ pk: 'USER#123', sk: 'PROFILE' })
-await table.update({ pk: 'USER#123', sk: 'PROFILE' }, { email: 'newemail@example.com' })
-await table.delete({ pk: 'USER#123', sk: 'PROFILE' })
-```
+// Use pattern helpers
+const userKey = PatternHelpers.entityKey('USER', '123')
 
-## Configuration Options
-
-### TableClientConfig
-
-```typescript
-interface TableClientConfig<TSchema = any> {
-  // Required
-  tableName: string
-  
-  // Optional AWS configuration
-  region?: string
-  endpoint?: string  // For DynamoDB Local
-  client?: DynamoDBClient  // Provide your own client
-  
-  // Optional features
-  schema?: Schema<TSchema>  // Enable schema validation
-  accessPatterns?: AccessPatternDefinitions<TSchema>  // Define access patterns
-  statsConfig?: StatsConfig  // Enable statistics collection
-  retryConfig?: RetryConfig  // Configure retry behavior
-}
-```
-
-### Basic Configuration
-
-```typescript
-const table = new TableClient({
-  tableName: 'users',
-  region: 'us-east-1'
-})
-```
-
-### With Schema Validation
-
-```typescript
-import { TableClient, schema } from 'ddb-lib'
-
-const UserSchema = schema.object({
-  pk: schema.string(),
-  sk: schema.string(),
-  name: schema.string(),
-  email: schema.string(),
-  age: schema.number().optional()
-})
-
-const table = new TableClient({
-  tableName: 'users',
-  schema: UserSchema
-})
-
-// TypeScript knows the shape of items
-const user = await table.get({ pk: 'USER#123', sk: 'PROFILE' })
-// user is typed as { pk: string, sk: string, name: string, email: string, age?: number } | null
-```
-
-### With Statistics Collection
-
-```typescript
-const table = new TableClient({
-  tableName: 'users',
-  statsConfig: {
-    enabled: true,
-    sampleRate: 1.0,  // Collect 100% of operations
-    thresholds: {
-      slowQueryMs: 100,
-      highRCU: 50,
-      highWCU: 50
-    }
-  }
-})
-
-// Get statistics
-const stats = table.getStats()
-console.log(stats.operations.query.avgLatencyMs)
+// Perform operations
+await table.put({ pk: userKey, sk: 'PROFILE', name: 'Alice' })
+const user = await table.get({ pk: userKey, sk: 'PROFILE' })
 
 // Get recommendations
 const recommendations = table.getRecommendations()
-for (const rec of recommendations) {
-  console.log(`[${rec.severity}] ${rec.message}`)
-}
 ```
 
-### With Access Patterns
+### For AWS Amplify Gen 2
+
+Install the Amplify integration package:
+
+```bash
+npm install @ddb-lib/amplify
+```
 
 ```typescript
-const table = new TableClient({
-  tableName: 'users',
-  accessPatterns: {
-    getUserById: {
-      keyCondition: (params: { userId: string }) => ({
-        pk: `USER#${params.userId}`,
-        sk: 'PROFILE'
-      })
-    },
-    getUserOrders: {
-      keyCondition: (params: { userId: string }) => ({
-        pk: `USER#${params.userId}`,
-        sk: { beginsWith: 'ORDER#' }
-      })
-    },
-    getOrdersByStatus: {
-      index: 'GSI1',
-      keyCondition: (params: { status: string }) => ({
-        pk: `STATUS#${params.status}`
-      })
-    }
-  }
+import { generateClient } from 'aws-amplify/data'
+import { AmplifyMonitor } from '@ddb-lib/amplify'
+import { PatternHelpers } from '@ddb-lib/core'
+import type { Schema } from './amplify/data/resource'
+
+const client = generateClient<Schema>()
+
+// Create monitor
+const monitor = new AmplifyMonitor({
+  statsConfig: { enabled: true }
 })
 
-// Execute patterns with type safety
-const orders = await table.executePattern('getUserOrders', { userId: '123' })
+// Wrap your Amplify model
+const monitoredTodos = monitor.wrap(client.models.Todo)
+
+// Use as normal - operations are automatically monitored
+await monitoredTodos.create({ title: 'Buy groceries', completed: false })
+
+// Get statistics and recommendations
+const stats = monitor.getStats()
+const recommendations = monitor.getRecommendations()
 ```
 
-## Core Operations
+### Using Core Utilities Only
 
-### Get
+If you only need pattern helpers without a client:
+
+```bash
+npm install @ddb-lib/core
+```
 
 ```typescript
-// Basic get
-const item = await table.get({ pk: 'USER#123', sk: 'PROFILE' })
+import { PatternHelpers, multiTenantKey } from '@ddb-lib/core'
 
-// With options
-const item = await table.get(
-  { pk: 'USER#123', sk: 'PROFILE' },
-  {
-    consistentRead: true,
-    projectionExpression: ['name', 'email']  // Only fetch specific attributes
-  }
-)
+// Use pattern helpers in your own code
+const key = PatternHelpers.compositeKey(['USER', '123', 'ORDER', '456'])
+const tenantKey = multiTenantKey('TENANT-1', 'CUST-123')
 ```
 
-### Put
+## ✨ Features
 
-```typescript
-// Basic put
-await table.put({
-  pk: 'USER#123',
-  sk: 'PROFILE',
-  name: 'Alice',
-  email: 'alice@example.com'
-})
+### Core Utilities (@ddb-lib/core)
+- **Pattern Helpers**: Entity keys, composite keys, time-series keys, hierarchical keys
+- **Multi-Attribute Keys**: Native support for DynamoDB's multi-attribute composite keys
+- **Expression Builders**: Type-safe builders for key conditions, filters, and conditions
+- **Type Guards**: Runtime type checking utilities
+- **Zero Dependencies**: Pure TypeScript with no external dependencies
 
-// Conditional put
-await table.put(
-  { pk: 'USER#123', sk: 'PROFILE', name: 'Alice' },
-  {
-    condition: { pk: { attributeNotExists: true } }  // Only if doesn't exist
-  }
-)
+### Statistics & Monitoring (@ddb-lib/stats)
+- **Performance Tracking**: Automatic latency and capacity monitoring
+- **Anti-Pattern Detection**: Identifies scans, hot partitions, inefficient queries
+- **Recommendations**: Actionable suggestions for optimization
+- **Framework Agnostic**: Works with any data access layer
+
+### Standalone Client (@ddb-lib/client)
+- **Complete DynamoDB API**: All operations with simplified interface
+- **Automatic Batching**: Intelligent chunking for batch operations
+- **Retry Logic**: Configurable exponential backoff
+- **Access Patterns**: Named, reusable query patterns
+- **Type Safety**: Full TypeScript support with inference
+
+### Amplify Integration (@ddb-lib/amplify)
+- **Seamless Integration**: Works with Amplify Gen 2 data client
+- **Automatic Monitoring**: Zero-config operation tracking
+- **Pattern Helpers**: Use DynamoDB best practices with Amplify
+- **Type Safe**: Preserves Amplify's type definitions
+
+## 📚 Documentation
+
+- **[Core Package Documentation](./packages/core/README.md)** - Pattern helpers and utilities
+- **[Stats Package Documentation](./packages/stats/README.md)** - Monitoring and recommendations
+- **[Client Package Documentation](./packages/client/README.md)** - Standalone TableClient
+- **[Amplify Package Documentation](./packages/amplify/README.md)** - Amplify Gen 2 integration
+- **[Complete API Reference](./API.md)** - Detailed API documentation
+
+## 📖 Examples
+
+### Standalone Examples
+- [Basic CRUD Operations](./examples/standalone/basic-crud.ts)
+- [Single-Table Design](./examples/standalone/single-table-design.ts)
+- [Statistics Monitoring](./examples/standalone/stats-monitoring.ts)
+
+### Amplify Examples
+- [Basic Amplify Usage](./examples/amplify/basic-usage.ts)
+- [Amplify with Monitoring](./examples/amplify/with-monitoring.ts)
+- [Pattern Helpers with Amplify](./examples/amplify/pattern-helpers.ts)
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Your Application                      │
+└─────────────────────────────────────────────────────────┘
+                           │
+        ┌──────────────────┴──────────────────┐
+        │                                     │
+        ▼                                     ▼
+┌───────────────────┐              ┌──────────────────────┐
+│  @ddb-lib/client  │              │  @ddb-lib/amplify    │
+│  (Standalone)     │              │  (Amplify Gen 2)     │
+└───────────────────┘              └──────────────────────┘
+        │                                     │
+        └──────────────────┬──────────────────┘
+                           │
+        ┌──────────────────┴──────────────────┐
+        │                                     │
+        ▼                                     ▼
+┌───────────────────┐              ┌──────────────────────┐
+│   @ddb-lib/core   │              │   @ddb-lib/stats     │
+│  (Utilities)      │◄─────────────│   (Monitoring)       │
+└───────────────────┘              └──────────────────────┘
 ```
 
-### Update
+## 🎯 Use Cases
 
-```typescript
-// Basic update
-const updated = await table.update(
-  { pk: 'USER#123', sk: 'PROFILE' },
-  { email: 'newemail@example.com', age: 30 }
-)
+### When to Use Each Package
 
-// Conditional update
-await table.update(
-  { pk: 'USER#123', sk: 'PROFILE' },
-  { status: 'ACTIVE' },
-  {
-    condition: { status: { eq: 'PENDING' } }
-  }
-)
+**@ddb-lib/core**
+- You need pattern helpers for key construction
+- You want multi-attribute key utilities
+- You're building your own DynamoDB abstraction
+- You need expression builders
+
+**@ddb-lib/stats**
+- You want to monitor DynamoDB performance
+- You need anti-pattern detection
+- You want optimization recommendations
+- You're using a custom data access layer
+
+**@ddb-lib/client**
+- You're building a standalone Node.js application
+- You want a simplified DynamoDB interface
+- You need built-in monitoring and best practices
+- You're not using Amplify
+
+**@ddb-lib/amplify**
+- You're using AWS Amplify Gen 2
+- You want to monitor Amplify operations
+- You need DynamoDB best practices with Amplify
+- You want pattern helpers for Amplify keys
+
+## 🔧 Development
+
+This is a monorepo managed with npm workspaces.
+
+```bash
+# Install dependencies
+npm install
+
+# Build all packages
+npm run build
+
+# Run all tests
+npm run test
+
+# Run tests for a specific package
+npm run test -w @ddb-lib/core
+
+# Type check
+npm run typecheck
+
+# Lint
+npm run lint
 ```
 
-### Delete
-
-```typescript
-// Basic delete
-await table.delete({ pk: 'USER#123', sk: 'PROFILE' })
-
-// Conditional delete
-await table.delete(
-  { pk: 'USER#123', sk: 'PROFILE' },
-  {
-    condition: { status: { eq: 'INACTIVE' } }
-  }
-)
-```
-
-### Query
-
-```typescript
-// Query with key condition
-const result = await table.query({
-  keyCondition: {
-    pk: 'USER#123',
-    sk: { beginsWith: 'ORDER#' }
-  }
-})
-
-// Query with filter
-const result = await table.query({
-  keyCondition: {
-    pk: 'USER#123',
-    sk: { beginsWith: 'ORDER#' }
-  },
-  filter: {
-    status: { eq: 'COMPLETED' }
-  }
-})
-
-// Query on GSI
-const result = await table.query({
-  indexName: 'GSI1',
-  keyCondition: {
-    pk: 'STATUS#ACTIVE'
-  }
-})
-
-// Paginated query
-for await (const item of table.queryPaginated({ keyCondition: { pk: 'USER#123' } })) {
-  console.log(item)
-}
-```
-
-### Scan
-
-```typescript
-// Basic scan (emits warning)
-const result = await table.scan()
-
-// Scan with filter
-const result = await table.scan({
-  filter: {
-    age: { gte: 18 }
-  }
-})
-
-// Paginated scan
-for await (const item of table.scanPaginated()) {
-  console.log(item)
-}
-```
-
-### Batch Operations
-
-```typescript
-// Batch get (automatically chunks to 100-item batches)
-const items = await table.batchGet([
-  { pk: 'USER#1', sk: 'PROFILE' },
-  { pk: 'USER#2', sk: 'PROFILE' },
-  { pk: 'USER#3', sk: 'PROFILE' }
-])
-
-// Batch write (automatically chunks to 25-item batches)
-await table.batchWrite([
-  { type: 'put', item: { pk: 'USER#1', sk: 'PROFILE', name: 'Alice' } },
-  { type: 'put', item: { pk: 'USER#2', sk: 'PROFILE', name: 'Bob' } },
-  { type: 'delete', key: { pk: 'USER#3', sk: 'PROFILE' } }
-])
-```
-
-### Transactional Operations
-
-```typescript
-// Transactional write
-await table.transactWrite([
-  { type: 'put', item: { pk: 'USER#1', sk: 'PROFILE', name: 'Alice' } },
-  { type: 'update', key: { pk: 'USER#2', sk: 'PROFILE' }, updates: { balance: 100 } },
-  { type: 'delete', key: { pk: 'USER#3', sk: 'PROFILE' } }
-])
-
-// Transactional get
-const items = await table.transactGet([
-  { pk: 'USER#1', sk: 'PROFILE' },
-  { pk: 'USER#2', sk: 'PROFILE' }
-])
-```
-
-## Multi-Attribute Composite Keys
-
-DynamoDB supports multi-attribute composite keys in GSIs (up to 4 attributes per key). This eliminates the need for manual string concatenation and preserves native data types.
-
-```typescript
-import { multiTenantKey, hierarchicalMultiKey } from 'ddb-lib'
-
-// Define access pattern with multi-attribute keys
-const table = new TableClient({
-  tableName: 'multi-tenant-app',
-  accessPatterns: {
-    getUsersByLocation: {
-      index: 'LocationIndex',
-      gsiConfig: {
-        indexName: 'LocationIndex',
-        partitionKey: {
-          attributes: [
-            { name: 'tenantId', type: 'string' },
-            { name: 'customerId', type: 'string' }
-          ]
-        },
-        sortKey: {
-          attributes: [
-            { name: 'country', type: 'string' },
-            { name: 'state', type: 'string' },
-            { name: 'city', type: 'string' }
-          ]
-        }
-      },
-      keyCondition: (params: { tenantId: string, customerId: string, country?: string, state?: string }) => ({
-        multiPk: multiTenantKey(params.tenantId, params.customerId),
-        multiSk: params.country ? hierarchicalMultiKey(params.country, params.state) : undefined
-      })
-    }
-  }
-})
-
-// Query with multi-attribute keys
-const users = await table.executePattern('getUsersByLocation', {
-  tenantId: 'TENANT-123',
-  customerId: 'CUST-456',
-  country: 'USA',
-  state: 'CA'
-})
-```
-
-## Pattern Helpers
-
-Utilities for implementing common DynamoDB patterns:
-
-```typescript
-import { PatternHelpers } from 'ddb-lib'
-
-// Composite keys
-const key = PatternHelpers.compositeKey(['USER', '123', 'ORDER', '456'])  // 'USER#123#ORDER#456'
-const parts = PatternHelpers.parseCompositeKey('USER#123#ORDER#456')  // ['USER', '123', 'ORDER', '456']
-
-// Entity keys for single-table design
-const userKey = PatternHelpers.entityKey('USER', '123')  // 'USER#123'
-const { entityType, id } = PatternHelpers.parseEntityKey('USER#123')  // { entityType: 'USER', id: '123' }
-
-// Time-series keys
-const dayKey = PatternHelpers.timeSeriesKey(new Date(), 'day')  // '2025-12-03'
-const ttl = PatternHelpers.ttlTimestamp(new Date('2026-01-01'))  // Unix timestamp
-
-// Hierarchical keys
-const path = PatternHelpers.hierarchicalKey(['org', 'dept', 'team'])  // 'org/dept/team'
-
-// Hot partition prevention
-const distributed = PatternHelpers.distributedKey('USER#123', 10)  // 'USER#123#SHARD#7'
-
-// Adjacency list pattern
-const { pk, sk } = PatternHelpers.adjacencyKeys('USER#123', 'ORDER#456')
-
-// GSI key construction
-const gsiKey = PatternHelpers.gsiKey('GSI1', 'USER', '123')  // 'GSI1#USER#123'
-
-// Sparse index helper
-const gsiValue = PatternHelpers.sparseIndexValue(emailVerified, 'VERIFIED#USER')  // Only set if true
-```
-
-## Error Handling
-
-```typescript
-import { DynamoDBWrapperError, ValidationError, ConditionalCheckError } from 'ddb-lib'
-
-try {
-  await table.put(item)
-} catch (error) {
-  if (error instanceof ValidationError) {
-    console.log(`Validation failed for field: ${error.field}`)
-  } else if (error instanceof ConditionalCheckError) {
-    console.log(`Condition failed: ${error.condition}`)
-  } else if (error instanceof DynamoDBWrapperError) {
-    console.log(`Operation ${error.operation} failed: ${error.message}`)
-  }
-}
-```
-
-## Retry Configuration
-
-```typescript
-const table = new TableClient({
-  tableName: 'users',
-  retryConfig: {
-    maxRetries: 3,
-    baseDelayMs: 100,
-    maxDelayMs: 5000,
-    retryableErrors: [
-      'ProvisionedThroughputExceededException',
-      'ThrottlingException',
-      'RequestLimitExceeded'
-    ]
-  }
-})
-```
-
-## Examples
-
-See the [examples](./examples) directory for complete working examples:
-
-- [Basic CRUD Operations](./examples/basic-crud-example.ts)
-- [Single-Table Design](./examples/single-table-design-example.ts)
-- [Stats and Recommendations](./examples/stats-recommendations-example.ts)
-- [Anti-Pattern Detection](./examples/anti-pattern-detection-example.ts)
-
-## API Documentation
-
-For detailed API documentation, see [API.md](./API.md).
-
-## Best Practices
-
-This library is designed around DynamoDB best practices:
-
-1. **Query over Scan**: Scans emit warnings; use queries with proper indexes
-2. **Batch Operations**: Automatic chunking for efficient bulk operations
-3. **Conditional Writes**: First-class support for optimistic locking
-4. **Projection Expressions**: Minimize data transfer by fetching only needed attributes
-5. **Hot Partition Prevention**: Built-in detection and utilities for key distribution
-6. **Capacity Optimization**: Track consumed capacity and get right-sizing recommendations
-7. **Multi-Attribute Keys**: Use native multi-attribute composite keys instead of concatenation
-
-## Requirements
+## 📋 Requirements
 
 - Node.js >= 18.0.0
-- AWS SDK v3
+- TypeScript >= 5.0.0
+- AWS SDK v3 (peer dependency for @ddb-lib/client)
+- aws-amplify (peer dependency for @ddb-lib/amplify)
 
-## License
+## 🤝 Contributing
+
+Contributions are welcome! Please see our contributing guidelines.
+
+## 📄 License
 
 MIT
 
-## Contributing
+## 🔗 Links
 
-Contributions are welcome! Please open an issue or submit a pull request.
+- [GitHub Repository](https://github.com/yourusername/ddb-lib)
+- [npm Organization](https://www.npmjs.com/org/ddb-lib)
+- [Documentation](./docs)
+- [Examples](./examples)
+
+## 💡 Why Modular?
+
+The modular architecture allows you to:
+
+1. **Minimize Bundle Size**: Install only what you need
+2. **Mix and Match**: Use utilities with any data access layer
+3. **Framework Agnostic**: Core utilities work everywhere
+4. **Easy Migration**: Move between standalone and Amplify easily
+5. **Tree-Shaking**: Unused code is eliminated from your bundle
+
+## 🆚 Comparison
+
+| Feature | @ddb-lib/client | @ddb-lib/amplify | Raw DynamoDB SDK | Amplify Data |
+|---------|----------------|------------------|------------------|--------------|
+| Type Safety | ✅ | ✅ | ⚠️ Partial | ✅ |
+| Pattern Helpers | ✅ | ✅ | ❌ | ❌ |
+| Performance Monitoring | ✅ | ✅ | ❌ | ❌ |
+| Anti-Pattern Detection | ✅ | ✅ | ❌ | ❌ |
+| Simplified API | ✅ | ✅ | ❌ | ✅ |
+| Multi-Attribute Keys | ✅ | ✅ | ⚠️ Manual | ⚠️ Manual |
+| GraphQL Integration | ❌ | ✅ | ❌ | ✅ |
+| Authorization Rules | ❌ | ✅ | ❌ | ✅ |
+
+## 🎓 Learn More
+
+- [DynamoDB Best Practices](./docs/best-practices.md)
+- [Single-Table Design Guide](./docs/single-table-design.md)
+- [Multi-Attribute Keys](./docs/multi-attribute-keys.md)
+- [Performance Optimization](./docs/performance.md)
+- [Migration Guide](./docs/migration.md)

@@ -1,0 +1,36 @@
+{
+  "name": "@ddb-lib/client",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rsbuild build && tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "test": "rstest run",
+    "test:watch": "rstest watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ddb-lib/core": "workspace:*",
+    "@ddb-lib/stats": "workspace:*"
+  },
+  "peerDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.709.0",
+    "@aws-sdk/lib-dynamodb": "^3.709.0"
+  },
+  "sideEffects": false
+}

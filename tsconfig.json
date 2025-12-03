@@ -23,8 +23,11 @@
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+
+    /* monorepo */
+    "composite": true,
+    "incremental": true
   },
-  "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

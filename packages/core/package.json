@@ -1,0 +1,33 @@
+{
+  "name": "@ddb-lib/core",
+  "version": "0.1.0",
+  "description": "Core utilities for DynamoDB patterns and best practices",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rsbuild build && tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "test": "rstest run",
+    "test:watch": "rstest watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "dynamodb",
+    "patterns",
+    "utilities",
+    "helpers"
+  ],
+  "author": "",
+  "license": "MIT",
+  "sideEffects": false
+}

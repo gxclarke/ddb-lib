@@ -1,0 +1,37 @@
+{
+  "name": "@ddb-lib/stats",
+  "version": "0.1.0",
+  "description": "Statistics collection and monitoring for DynamoDB operations",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rsbuild build && tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "test": "rstest run",
+    "test:watch": "rstest watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "dynamodb",
+    "statistics",
+    "monitoring",
+    "performance",
+    "recommendations"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ddb-lib/core": "workspace:*"
+  },
+  "sideEffects": false
+}

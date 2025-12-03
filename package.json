@@ -1,24 +1,31 @@
 {
-	"name": "ddb-lib",
+	"name": "ddb-lib-monorepo",
 	"version": "0.1.0",
 	"description": "Lightweight TypeScript wrapper for AWS DynamoDB with schema validation and best practices",
+	"private": true,
 	"type": "module",
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"types": "./dist/index.d.ts"
-		}
-	},
-	"files": [
-		"dist"
+	"workspaces": [
+		"packages/*"
 	],
 	"scripts": {
-		"build": "rsbuild build && tsc --emitDeclarationOnly",
-		"test": "rstest",
-		"test:watch": "rstest --watch",
-		"typecheck": "tsc --noEmit",
+		"build": "npm run build:packages",
+		"build:packages": "npm run build -w @ddb-lib/core && npm run build -w @ddb-lib/stats && npm run build -w @ddb-lib/client && npm run build -w @ddb-lib/amplify",
+		"build:core": "npm run build -w @ddb-lib/core",
+		"build:stats": "npm run build -w @ddb-lib/stats",
+		"build:client": "npm run build -w @ddb-lib/client",
+		"build:amplify": "npm run build -w @ddb-lib/amplify",
+		"clean": "npm run clean --workspaces --if-present",
+		"test": "npm run test --workspaces --if-present",
+		"test:all": "rstest run",
+		"test:unit": "rstest run",
+		"test:integration": "rstest run --config rstest.integration.config.ts",
+		"test:watch": "npm run test:watch --workspaces --if-present",
+		"test:core": "npm run test -w @ddb-lib/core",
+		"test:stats": "npm run test -w @ddb-lib/stats",
+		"test:client": "npm run test -w @ddb-lib/client",
+		"test:amplify": "npm run test -w @ddb-lib/amplify",
+		"test:coverage": "rstest run --coverage",
+		"typecheck": "npm run typecheck --workspaces --if-present",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
 		"format": "biome format --write ."
@@ -32,10 +39,6 @@
 	],
 	"author": "",
 	"license": "MIT",
-	"dependencies": {
-		"@aws-sdk/client-dynamodb": "^3.709.0",
-		"@aws-sdk/lib-dynamodb": "^3.709.0"
-	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.7",
 		"@rsbuild/core": "^1.6.7",
