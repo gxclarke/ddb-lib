@@ -1,0 +1,17 @@
+<header class="site-header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
+    </div>
+    <div class="navbar-menu">
+      {{ range .Site.Menus.main }}
+      <a href="{{ .URL }}" class="nav-link">{{ .Name }}</a>
+      {{ end }}
+    </div>
+    <div class="navbar-end">
+      <a href="{{ .Site.Params.github_repo }}" class="nav-link" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+  </nav>
+</header>

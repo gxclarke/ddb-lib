@@ -1,0 +1,8 @@
+name = "ddb-docs"
+license = "MIT"
+description = "Custom documentation theme for ddb-lib"
+homepage = "https://github.com/yourusername/ddb-lib"
+min_version = "0.120.0"
+
+[author]
+  name = "ddb-lib"

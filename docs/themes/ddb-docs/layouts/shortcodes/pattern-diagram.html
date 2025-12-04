@@ -1,0 +1,42 @@
+<div class="pattern-diagram">
+  <div class="diagram-container">
+    {{ if .Get "mermaid" }}
+    <div class="mermaid">
+      {{ .Inner }}
+    </div>
+    {{ else if .Get "src" }}
+    <img src="{{ .Get " src" | relURL }}" alt="{{ .Get " alt" }}" loading="lazy" />
+    {{ end }}
+  </div>
+  {{ if .Get "caption" }}
+  <p class="diagram-caption">{{ .Get "caption" }}</p>
+  {{ end }}
+</div>
+
+<style>
+  .pattern-diagram {
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  .diagram-container {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 2rem;
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .diagram-container img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .diagram-caption {
+    margin-top: 1rem;
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+  }
+</style>

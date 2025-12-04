@@ -1,0 +1,25 @@
+{{ define "main" }}
+<article class="doc-content">
+  <h1>{{ .Title }}</h1>
+  {{ if .Params.description }}
+  <p class="lead">{{ .Params.description }}</p>
+  {{ end }}
+
+  {{ if .TableOfContents }}
+  <div class="toc">
+    <h2>On This Page</h2>
+    {{ .TableOfContents }}
+  </div>
+  {{ end }}
+
+  <div class="content-body">
+    {{ .Content }}
+  </div>
+
+  {{ if .GitInfo }}
+  <div class="page-meta">
+    <p>Last updated: {{ .GitInfo.AuthorDate.Format "January 2, 2006" }}</p>
+  </div>
+  {{ end }}
+</article>
+{{ end }}

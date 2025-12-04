@@ -1,0 +1,16 @@
+<aside class="sidebar">
+  <div class="sidebar-content">
+    {{ if .IsPage }}
+    <nav class="sidebar-nav">
+      {{ $currentPage := . }}
+      {{ range .Site.Menus.main }}
+      <div class="nav-section">
+        <a href="{{ .URL }}" class="nav-section-title{{ if eq $currentPage.Section .Identifier }} active{{ end }}">
+          {{ .Name }}
+        </a>
+      </div>
+      {{ end }}
+    </nav>
+    {{ end }}
+  </div>
+</aside>

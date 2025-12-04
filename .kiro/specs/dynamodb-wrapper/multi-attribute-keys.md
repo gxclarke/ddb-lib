@@ -1,483 +1,592 @@
-# Multi-Attribute Composite Keys for DynamoDB GSIs
+# Multi-Attribute Composite Keys
 
 ## Overview
 
-Amazon DynamoDB now supports multi-attribute composite keys in Global Secondary Indexes (GSIs), allowing up to 4 attributes for both partition keys and sort keys. This feature eliminates the need for manual string concatenation and preserves native data types.
+DynamoDB supports multi-attribute composite keys in Global Secondary Indexes (GSIs), allowing up to 4 attributes for both partition keys and sort keys. This feature eliminates the need for manual string concatenation and preserves native data types, providing better type safety and more flexible querying.
 
-## Key Benefits
+## Benefits
 
-1. **Native Type Preservation**: Each attribute retains its native data type (string, number, binary)
-2. **Improved Distribution**: Multi-attribute partition keys reduce hot partition risk
-3. **Flexible Querying**: Query on increasingly specific attribute combinations from left to right
-4. **Simplified Data Modeling**: No need for synthetic concatenated attributes
-5. **Type Safety**: Strongly typed multi-attribute key definitions in TypeScript
-
-## Implementation in DynamoDB Wrapper
-
-### Type Definitions
+### 1. Native Type Preservation
+Each attribute retains its original type (string, number, or binary), avoiding the need to convert everything to strings.
 
 ```typescript
-// Multi-attribute key configuration
-interface MultiAttributeKey {
-  attributes: Array<{
-    name: string
-    type: 'string' | 'number' | 'binary'
-  }>
-}
+// ❌ Old way: Concatenated strings
+const pk = `TENANT#${tenantId}#CUSTOMER#${customerId}` // Everything becomes a string
 
-// GSI configuration with multi-attribute support
-interface GSIConfig {
-  indexName: string
-  partitionKey: string | MultiAttributeKey
-  sortKey?: string | MultiAttributeKey
-}
-
-// Extended KeyCondition interface
-interface KeyCondition {
-  // Traditional keys
-  pk?: string | number | Uint8Array
-  sk?: string | number | Uint8Array | { /* operators */ }
-  
-  // Multi-attribute keys
-  multiPk?: Array<string | number | Uint8Array>
-  multiSk?: Array<string | number | Uint8Array> | { /* operators */ }
-}
+// ✅ New way: Multi-attribute keys
+const pk = [tenantId, customerId, departmentId] // Types preserved
 ```
 
-### Usage Examples
-
-#### Multi-Tenant Application
+### 2. Improved Distribution
+Multi-attribute partition keys can reduce hot partition risk by distributing data across more partition key combinations.
 
 ```typescript
-// Define GSI with multi-attribute partition key
-const gsiConfig: GSIConfig = {
-  indexName: 'TenantCustomerIndex',
+// Better distribution with multi-attribute partition key
+const gsiConfig = {
+  indexName: 'TenantIndex',
   partitionKey: {
     attributes: [
       { name: 'tenantId', type: 'string' },
-      { name: 'customerId', type: 'string' }
-    ]
+      { name: 'customerId', type: 'string' },
+    ],
   },
-  sortKey: {
-    attributes: [
-      { name: 'orderDate', type: 'number' },
-      { name: 'orderId', type: 'string' }
-    ]
-  }
+}
+```
+
+### 3. Flexible Querying
+Query on increasingly specific attribute combinations with left-to-right matching for sort keys.
+
+```typescript
+// Query by country only
+multiSk: ['USA']
+
+// Query by country and state
+multiSk: ['USA', 'CA']
+
+// Query by country, state, and city
+multiSk: ['USA', 'CA', 'San Francisco']
+```
+
+### 4. Type Safety
+Strongly typed multi-attribute key definitions catch errors at compile time.
+
+```typescript
+// TypeScript will enforce correct types
+const key = multiTenantKey('TENANT-123', 'CUSTOMER-456') // ✓
+const key = multiTenantKey(123, 456) // ✗ Type error
+```
+
+## Common Use Cases
+
+### 1. Multi-Tenant Applications
+
+Perfect for SaaS applications with hierarchical tenant structures.
+
+```typescript
+import { multiTenantKey } from 'ddb-lib'
+
+const accessPatterns = {
+  getUsersByTenant: {
+    index: 'TenantIndex',
+    gsiConfig: {
+      indexName: 'TenantIndex',
+      partitionKey: {
+        attributes: [
+          { name: 'tenantId', type: 'string' },
+          { name: 'customerId', type: 'string' },
+        ],
+      },
+    },
+    keyCondition: (params: { tenantId: string; customerId: string }) => ({
+      multiPk: multiTenantKey(params.tenantId, params.customerId),
+    }),
+  },
 }
 
-// Access pattern using multi-attribute keys
-const patterns = {
-  getCustomerOrders: {
-    index: 'TenantCustomerIndex',
-    gsiConfig,
+// Query all users for a specific tenant and customer
+const users = await client.executePattern('getUsersByTenant', {
+  tenantId: 'ACME-CORP',
+  customerId: 'CUSTOMER-001',
+})
+```
+
+### 2. Hierarchical Data (Location-Based)
+
+Query data by increasingly specific geographic locations.
+
+```typescript
+import { hierarchicalMultiKey } from 'ddb-lib'
+
+const accessPatterns = {
+  getUsersByLocation: {
+    index: 'LocationIndex',
+    gsiConfig: {
+      indexName: 'LocationIndex',
+      partitionKey: {
+        attributes: [{ name: 'tenantId', type: 'string' }],
+      },
+      sortKey: {
+        attributes: [
+          { name: 'country', type: 'string' },
+          { name: 'state', type: 'string' },
+          { name: 'city', type: 'string' },
+        ],
+      },
+    },
     keyCondition: (params: {
       tenantId: string
-      customerId: string
-      fromDate?: number
+      country?: string
+      state?: string
+      city?: string
     }) => ({
-      multiPk: [params.tenantId, params.customerId],
-      multiSk: params.fromDate ? {
-        gte: [params.fromDate]
-      } : undefined
-    })
-  }
+      multiPk: [params.tenantId],
+      multiSk: hierarchicalMultiKey(
+        params.country!,
+        params.state,
+        params.city
+      ),
+    }),
+  },
 }
 
-// Query execution
-const orders = await table.executePattern('getCustomerOrders', {
+// Query all users in USA
+const usaUsers = await client.executePattern('getUsersByLocation', {
   tenantId: 'TENANT-123',
-  customerId: 'CUST-456',
-  fromDate: Date.now() - 30 * 24 * 60 * 60 * 1000 // Last 30 days
+  country: 'USA',
+})
+
+// Query all users in California
+const caUsers = await client.executePattern('getUsersByLocation', {
+  tenantId: 'TENANT-123',
+  country: 'USA',
+  state: 'CA',
+})
+
+// Query all users in San Francisco
+const sfUsers = await client.executePattern('getUsersByLocation', {
+  tenantId: 'TENANT-123',
+  country: 'USA',
+  state: 'CA',
+  city: 'San Francisco',
 })
 ```
 
-#### Hierarchical Location Data
+### 3. Time-Series with Categories
+
+Combine categorical data with timestamps for efficient time-series queries.
 
 ```typescript
-// GSI for location-based queries
-const locationGSI: GSIConfig = {
-  indexName: 'LocationIndex',
-  partitionKey: { name: 'userId', type: 'string' },
-  sortKey: {
-    attributes: [
-      { name: 'country', type: 'string' },
-      { name: 'state', type: 'string' },
-      { name: 'city', type: 'string' }
-    ]
-  }
+import { timeSeriesMultiKey } from 'ddb-lib'
+
+const accessPatterns = {
+  getEventsByCategory: {
+    index: 'EventIndex',
+    gsiConfig: {
+      indexName: 'EventIndex',
+      partitionKey: {
+        attributes: [{ name: 'category', type: 'string' }],
+      },
+      sortKey: {
+        attributes: [
+          { name: 'timestamp', type: 'number' },
+          { name: 'priority', type: 'number' },
+        ],
+      },
+    },
+    keyCondition: (params: {
+      category: string
+      timestampFrom?: number
+      priority?: number
+    }) => {
+      const result: KeyCondition = {
+        multiPk: [params.category],
+      }
+
+      if (params.timestampFrom !== undefined) {
+        if (params.priority !== undefined) {
+          result.multiSk = { gte: [params.timestampFrom, params.priority] }
+        } else {
+          result.multiSk = { gte: [params.timestampFrom] }
+        }
+      }
+
+      return result
+    },
+  },
 }
 
-// Query all locations for a user
-const allLocations = await table.query({
-  index: 'LocationIndex',
-  keyCondition: {
-    pk: 'USER-123'
-  }
+// Query all ERROR events
+const allErrors = await client.executePattern('getEventsByCategory', {
+  category: 'ERROR',
 })
 
-// Query specific country
-const usLocations = await table.query({
-  index: 'LocationIndex',
-  keyCondition: {
-    pk: 'USER-123',
-    multiSk: ['USA']
-  }
+// Query ERROR events from a specific timestamp
+const recentErrors = await client.executePattern('getEventsByCategory', {
+  category: 'ERROR',
+  timestampFrom: Date.now() - 3600000, // Last hour
 })
 
-// Query specific state
-const caLocations = await table.query({
-  index: 'LocationIndex',
-  keyCondition: {
-    pk: 'USER-123',
-    multiSk: ['USA', 'CA']
-  }
-})
-
-// Query specific city
-const sfLocations = await table.query({
-  index: 'LocationIndex',
-  keyCondition: {
-    pk: 'USER-123',
-    multiSk: ['USA', 'CA', 'San Francisco']
-  }
+// Query high-priority ERROR events from a specific timestamp
+const criticalErrors = await client.executePattern('getEventsByCategory', {
+  category: 'ERROR',
+  timestampFrom: Date.now() - 3600000,
+  priority: 1,
 })
 ```
 
-#### Time-Series with Categories
+### 4. Product Categorization
+
+Organize products with multiple levels of categorization.
 
 ```typescript
-// GSI for categorized time-series data
-const timeSeriesGSI: GSIConfig = {
-  indexName: 'CategoryTimeIndex',
-  partitionKey: { name: 'deviceId', type: 'string' },
-  sortKey: {
-    attributes: [
-      { name: 'category', type: 'string' },
-      { name: 'timestamp', type: 'number' },
-      { name: 'priority', type: 'number' }
-    ]
-  }
+import { productCategoryMultiKey } from 'ddb-lib'
+
+const accessPatterns = {
+  getProductsByCategory: {
+    index: 'CategoryIndex',
+    gsiConfig: {
+      indexName: 'CategoryIndex',
+      partitionKey: {
+        attributes: [
+          { name: 'category', type: 'string' },
+          { name: 'subcategory', type: 'string' },
+        ],
+      },
+      sortKey: {
+        attributes: [
+          { name: 'brand', type: 'string' },
+          { name: 'price', type: 'number' },
+        ],
+      },
+    },
+    keyCondition: (params: {
+      category: string
+      subcategory: string
+      brand?: string
+      minPrice?: number
+    }) => ({
+      multiPk: [params.category, params.subcategory],
+      multiSk: params.brand
+        ? params.minPrice
+          ? { gte: [params.brand, params.minPrice] }
+          : [params.brand]
+        : undefined,
+    }),
+  },
 }
 
-// Query high-priority temperature readings from last hour
-const readings = await table.query({
-  index: 'CategoryTimeIndex',
-  keyCondition: {
-    pk: 'DEVICE-789',
-    multiSk: {
-      between: [
-        ['temperature', Date.now() - 3600000, 1],
-        ['temperature', Date.now(), 10]
-      ]
-    }
-  }
+// Query all laptops
+const laptops = await client.executePattern('getProductsByCategory', {
+  category: 'Electronics',
+  subcategory: 'Laptops',
+})
+
+// Query Apple laptops
+const appleLaptops = await client.executePattern('getProductsByCategory', {
+  category: 'Electronics',
+  subcategory: 'Laptops',
+  brand: 'Apple',
+})
+
+// Query Apple laptops over $2000
+const premiumAppleLaptops = await client.executePattern('getProductsByCategory', {
+  category: 'Electronics',
+  subcategory: 'Laptops',
+  brand: 'Apple',
+  minPrice: 2000,
 })
 ```
 
-## Pattern Helpers
+## Helper Functions
 
-The wrapper provides helper methods for common multi-attribute key patterns:
+The library provides several helper functions for common multi-attribute key patterns:
+
+### multiAttributeKey()
+Generic helper for creating multi-attribute keys.
 
 ```typescript
-// Multi-tenant key
-const key = PatternHelpers.multiTenantKey('TENANT-123', 'CUST-456', 'DEPT-789')
-// Returns: ['TENANT-123', 'CUST-456', 'DEPT-789']
+import { multiAttributeKey } from 'ddb-lib'
 
-// Hierarchical key
-const locationKey = PatternHelpers.hierarchicalMultiKey('USA', 'CA', 'San Francisco')
-// Returns: ['USA', 'CA', 'San Francisco']
+const key = multiAttributeKey('value1', 'value2', 'value3')
+// Returns: ['value1', 'value2', 'value3']
+```
 
-// Time-series with category
-const tsKey = PatternHelpers.timeSeriesMultiKey('temperature', new Date(), 'sensor-1')
-// Returns: ['temperature', 1733184000000, 'sensor-1']
+### multiTenantKey()
+For multi-tenant applications with tenant and customer hierarchy.
 
-// Validation
-PatternHelpers.validateMultiAttributeKey(
-  ['TENANT-123', 'CUST-456'],
-  {
-    attributes: [
-      { name: 'tenantId', type: 'string' },
-      { name: 'customerId', type: 'string' }
-    ]
-  }
-)
+```typescript
+import { multiTenantKey } from 'ddb-lib'
+
+const key = multiTenantKey('TENANT-123', 'CUSTOMER-456')
+// Returns: ['TENANT-123', 'CUSTOMER-456']
+
+const keyWithDept = multiTenantKey('TENANT-123', 'CUSTOMER-456', 'DEPT-A')
+// Returns: ['TENANT-123', 'CUSTOMER-456', 'DEPT-A']
+```
+
+### hierarchicalMultiKey()
+For hierarchical data structures (up to 4 levels).
+
+```typescript
+import { hierarchicalMultiKey } from 'ddb-lib'
+
+const key = hierarchicalMultiKey('USA', 'CA', 'San Francisco', 'Downtown')
+// Returns: ['USA', 'CA', 'San Francisco', 'Downtown']
+```
+
+### timeSeriesMultiKey()
+For time-series data with categories.
+
+```typescript
+import { timeSeriesMultiKey } from 'ddb-lib'
+
+const key = timeSeriesMultiKey('ERROR', new Date('2025-12-02'))
+// Returns: ['ERROR', 1733097600000]
+
+const keyWithSubcategory = timeSeriesMultiKey('ERROR', 1733097600000, 'DATABASE')
+// Returns: ['ERROR', 1733097600000, 'DATABASE']
+```
+
+### locationMultiKey()
+For location-based data.
+
+```typescript
+import { locationMultiKey } from 'ddb-lib'
+
+const key = locationMultiKey('USA', 'CA', 'San Francisco', 'SOMA')
+// Returns: ['USA', 'CA', 'San Francisco', 'SOMA']
+```
+
+### statusPriorityMultiKey()
+For task management and workflow systems.
+
+```typescript
+import { statusPriorityMultiKey } from 'ddb-lib'
+
+const key = statusPriorityMultiKey('PENDING', 1, 'USER-123')
+// Returns: ['PENDING', 1, 'USER-123']
+```
+
+## Comparison Operators
+
+Multi-attribute sort keys support all standard DynamoDB comparison operators:
+
+### Equality
+```typescript
+multiSk: ['USA', 'CA']
+```
+
+### Greater Than / Greater Than or Equal
+```typescript
+multiSk: { gt: ['USA', 'CA'] }
+multiSk: { gte: ['USA', 'CA'] }
+```
+
+### Less Than / Less Than or Equal
+```typescript
+multiSk: { lt: ['USA', 'NY'] }
+multiSk: { lte: ['USA', 'NY'] }
+```
+
+### Between
+```typescript
+multiSk: {
+  between: [
+    ['USA', 'CA'],
+    ['USA', 'NY'],
+  ],
+}
 ```
 
 ## Migration from Concatenated Keys
 
-### Before (Concatenated Keys)
+### Before (Concatenated Strings)
 
 ```typescript
-// Old approach: manual concatenation
-const item = {
-  pk: 'USER#123',
-  sk: 'ORDER#456',
-  gsi1pk: 'TENANT#ABC#CUSTOMER#XYZ',
-  gsi1sk: 'USA#CA#San Francisco',
-  // ... other attributes
+// Old approach with string concatenation
+const accessPatterns = {
+  getUsersByTenant: {
+    index: 'TenantIndex',
+    keyCondition: (params: { tenantId: string; customerId: string }) => ({
+      pk: `TENANT#${params.tenantId}#CUSTOMER#${params.customerId}`,
+    }),
+  },
 }
 
-// Querying requires exact string matching
-const result = await table.query({
-  index: 'GSI1',
-  keyCondition: {
-    pk: 'TENANT#ABC#CUSTOMER#XYZ',
-    sk: { beginsWith: 'USA#CA' }
-  }
-})
-
 // Problems:
-// - Type information lost (everything is string)
+// - Everything is a string (no type safety)
 // - Manual parsing required
-// - Error-prone concatenation
-// - Difficult to query partial keys
+// - Prone to separator conflicts
+// - Less efficient queries
 ```
 
 ### After (Multi-Attribute Keys)
 
 ```typescript
-// New approach: multi-attribute keys
-const item = {
-  pk: 'USER#123',
-  sk: 'ORDER#456',
-  tenantId: 'ABC',
-  customerId: 'XYZ',
-  country: 'USA',
-  state: 'CA',
-  city: 'San Francisco',
-  // ... other attributes
-}
-
-// GSI uses native attributes
-const gsiConfig: GSIConfig = {
-  indexName: 'GSI1',
-  partitionKey: {
-    attributes: [
-      { name: 'tenantId', type: 'string' },
-      { name: 'customerId', type: 'string' }
-    ]
+// New approach with multi-attribute keys
+const accessPatterns = {
+  getUsersByTenant: {
+    index: 'TenantIndex',
+    gsiConfig: {
+      indexName: 'TenantIndex',
+      partitionKey: {
+        attributes: [
+          { name: 'tenantId', type: 'string' },
+          { name: 'customerId', type: 'string' },
+        ],
+      },
+    },
+    keyCondition: (params: { tenantId: string; customerId: string }) => ({
+      multiPk: [params.tenantId, params.customerId],
+    }),
   },
-  sortKey: {
-    attributes: [
-      { name: 'country', type: 'string' },
-      { name: 'state', type: 'string' },
-      { name: 'city', type: 'string' }
-    ]
-  }
 }
-
-// Querying with type safety
-const result = await table.query({
-  index: 'GSI1',
-  keyCondition: {
-    multiPk: ['ABC', 'XYZ'],
-    multiSk: ['USA', 'CA'] // Partial match supported
-  }
-})
 
 // Benefits:
-// - Type safety maintained
-// - No manual parsing
-// - Flexible partial matching
-// - Better query performance
+// - Type safety (TypeScript enforces correct types)
+// - No parsing needed
+// - No separator conflicts
+// - More efficient queries
+// - Better distribution
 ```
 
-### Migration Steps
+### Migration Strategy
 
-1. **Add New Attributes**: Add individual attributes to your items
+1. **Create new GSI with multi-attribute keys**
    ```typescript
-   // Add tenantId, customerId as separate attributes
-   await table.update(key, {
-     tenantId: 'ABC',
-     customerId: 'XYZ'
+   // Add new GSI to your DynamoDB table
+   {
+     IndexName: 'TenantIndexV2',
+     KeySchema: [
+       { AttributeName: 'tenantId', KeyType: 'HASH' },
+       { AttributeName: 'customerId', KeyType: 'RANGE' },
+     ],
+     // ... other GSI configuration
+   }
+   ```
+
+2. **Backfill data with separate attributes**
+   ```typescript
+   // Update existing items to include separate attributes
+   await client.update(key, {
+     tenantId: 'TENANT-123',
+     customerId: 'CUSTOMER-456',
    })
    ```
 
-2. **Create New GSI**: Create GSI with multi-attribute keys
+3. **Update access patterns to use multi-attribute keys**
    ```typescript
-   // Use AWS Console or CloudFormation to create GSI
-   // with multi-attribute partition/sort keys
+   // Switch to new pattern
+   const users = await client.executePattern('getUsersByTenantV2', {
+     tenantId: 'TENANT-123',
+     customerId: 'CUSTOMER-456',
+   })
    ```
 
-3. **Update Access Patterns**: Migrate queries to use multi-attribute keys
+4. **Remove old concatenated attributes and GSI**
+   Once all queries are migrated, remove the old GSI and attributes.
+
+## Limitations and Best Practices
+
+### Limitations
+
+1. **Maximum 4 attributes per key**
+   - Partition keys: up to 4 attributes
+   - Sort keys: up to 4 attributes
+
+2. **Left-to-right matching for sort keys**
+   - You cannot skip attributes in sort key queries
+   - Valid: `['USA']`, `['USA', 'CA']`, `['USA', 'CA', 'SF']`
+   - Invalid: `['USA', undefined, 'SF']` (skipping state)
+
+3. **Supported types only**
+   - string, number, binary
+   - No support for boolean, list, map, etc.
+
+### Best Practices
+
+1. **Order attributes by query patterns**
    ```typescript
-   // Old pattern
-   const oldPattern = {
-     keyCondition: (params) => ({
-       pk: `TENANT#${params.tenantId}#CUSTOMER#${params.customerId}`
-     })
+   // Put most commonly queried attributes first
+   sortKey: {
+     attributes: [
+       { name: 'country', type: 'string' },    // Most common
+       { name: 'state', type: 'string' },      // Less common
+       { name: 'city', type: 'string' },       // Least common
+     ],
    }
+   ```
+
+2. **Use validation**
+   ```typescript
+   // Always provide gsiConfig for validation
+   gsiConfig: {
+     indexName: 'MyIndex',
+     partitionKey: { attributes: [...] },
+     sortKey: { attributes: [...] },
+   }
+   ```
+
+3. **Consider cardinality**
+   ```typescript
+   // High cardinality attributes first for better distribution
+   partitionKey: {
+     attributes: [
+       { name: 'tenantId', type: 'string' },    // High cardinality
+       { name: 'customerId', type: 'string' },  // High cardinality
+     ],
+   }
+   ```
+
+4. **Use helper functions**
+   ```typescript
+   // Use provided helpers for common patterns
+   import { multiTenantKey, hierarchicalMultiKey } from 'ddb-lib'
    
-   // New pattern
-   const newPattern = {
-     keyCondition: (params) => ({
-       multiPk: [params.tenantId, params.customerId]
-     })
-   }
+   const pk = multiTenantKey(tenantId, customerId)
+   const sk = hierarchicalMultiKey(country, state, city)
    ```
 
-4. **Backfill Data**: Ensure all items have the new attributes
+## Type Safety
 
-5. **Remove Old GSI**: Once migration is complete, remove old concatenated GSI
-
-## Best Practices
-
-### 1. Attribute Order Matters
-
-Multi-attribute sort keys support left-to-right partial matching:
+The library provides full TypeScript type safety for multi-attribute keys:
 
 ```typescript
-// Sort key: [country, state, city]
-
-// ✅ Valid queries
-multiSk: ['USA']                    // Match country only
-multiSk: ['USA', 'CA']              // Match country and state
-multiSk: ['USA', 'CA', 'SF']        // Match all three
-
-// ❌ Invalid queries
-multiSk: ['CA']                     // Can't skip country
-multiSk: ['USA', 'SF']              // Can't skip state
-```
-
-**Recommendation**: Order attributes from least to most specific.
-
-### 2. Choose Attributes Wisely
-
-For partition keys, choose attributes that:
-- Provide good distribution
-- Are frequently queried together
-- Have high cardinality
-
-```typescript
-// ✅ Good: High cardinality, even distribution
-multiPk: [tenantId, customerId, departmentId]
-
-// ❌ Bad: Low cardinality, potential hot partitions
-multiPk: [accountType, status] // Only a few possible values
-```
-
-### 3. Limit Attribute Count
-
-While DynamoDB supports up to 4 attributes, fewer is often better:
-- Easier to understand and maintain
-- Simpler query patterns
-- Better performance
-
-```typescript
-// ✅ Good: 2-3 attributes for most use cases
-multiPk: [tenantId, customerId]
-multiSk: [category, timestamp]
-
-// ⚠️ Consider: Do you really need 4 attributes?
-multiSk: [level1, level2, level3, level4]
-```
-
-### 4. Type Consistency
-
-Use consistent types across your data model:
-
-```typescript
-// ✅ Good: Consistent timestamp type
-multiSk: [category, timestamp] // timestamp is always number
-
-// ❌ Bad: Mixed types for same semantic meaning
-multiSk: [category, timestamp] // sometimes number, sometimes string
-```
-
-### 5. Validation
-
-Always validate multi-attribute keys against GSI configuration:
-
-```typescript
-const pattern = {
-  index: 'MyGSI',
-  gsiConfig: {
-    indexName: 'MyGSI',
-    partitionKey: {
-      attributes: [
-        { name: 'tenantId', type: 'string' },
-        { name: 'customerId', type: 'string' }
-      ]
-    }
+// Type-safe access pattern definition
+const accessPatterns = {
+  getUsersByLocation: {
+    keyCondition: (params: {
+      tenantId: string
+      country: string
+      state?: string
+    }) => ({
+      multiPk: [params.tenantId],
+      multiSk: [params.country, params.state].filter((v): v is string => v !== undefined),
+    }),
   },
-  keyCondition: (params) => {
-    const key = [params.tenantId, params.customerId]
-    // Wrapper automatically validates against gsiConfig
-    return { multiPk: key }
-  }
+} satisfies AccessPatternDefinitions<User>
+
+// TypeScript enforces correct parameter types
+await client.executePattern('getUsersByLocation', {
+  tenantId: 'TENANT-123',
+  country: 'USA',
+  state: 'CA',
+}) // ✓
+
+await client.executePattern('getUsersByLocation', {
+  tenantId: 123, // ✗ Type error: number not assignable to string
+  country: 'USA',
+})
+```
+
+## Validation
+
+The library validates multi-attribute keys at runtime:
+
+```typescript
+// Validates attribute count
+multiPk: ['value1', 'value2', 'value3', 'value4', 'value5']
+// Error: Cannot have more than 4 attributes
+
+// Validates attribute types
+multiPk: ['string', 123, 'another']
+// Error if config expects all strings
+
+// Validates against GSI configuration
+gsiConfig: {
+  partitionKey: {
+    attributes: [
+      { name: 'tenantId', type: 'string' },
+      { name: 'customerId', type: 'number' },
+    ],
+  },
 }
+multiPk: ['TENANT-123', 'not-a-number']
+// Error: customerId must be a number
 ```
 
-## Limitations
+## Additional Resources
 
-1. **No beginsWith for Multi-Attribute Sort Keys**: The `beginsWith` operator is not supported for multi-attribute sort keys. Use partial array matching instead.
-
-2. **Maximum 4 Attributes**: Each key (partition or sort) can have at most 4 attributes.
-
-3. **GSI Only**: Multi-attribute keys are only supported for GSIs, not for primary keys or LSIs.
-
-4. **Left-to-Right Matching**: Sort key queries must match attributes from left to right (no skipping).
-
-5. **Type Constraints**: Each attribute must be string, number, or binary (no complex types).
-
-## Performance Considerations
-
-### Query Performance
-
-Multi-attribute keys can improve query performance by:
-- Reducing the need for filter expressions
-- Enabling more precise key conditions
-- Better utilizing DynamoDB's indexing
-
-### Write Performance
-
-Multi-attribute keys have minimal impact on write performance:
-- No additional marshalling overhead
-- Same WCU consumption as single-attribute keys
-- Better distribution can reduce throttling
-
-### Storage
-
-Multi-attribute keys may slightly increase storage:
-- Each attribute is stored separately
-- But eliminates need for concatenated synthetic attributes
-- Net storage impact is typically neutral or positive
-
-## Troubleshooting
-
-### Error: "Too many attributes"
-
-```typescript
-// ❌ Error: More than 4 attributes
-multiPk: [attr1, attr2, attr3, attr4, attr5]
-
-// ✅ Solution: Limit to 4 attributes
-multiPk: [attr1, attr2, attr3, attr4]
-```
-
-### Error: "Type mismatch"
-
-```typescript
-// ❌ Error: Number provided for string attribute
-multiPk: ['TENANT-123', 456] // customerId should be string
-
-// ✅ Solution: Use correct type
-multiPk: ['TENANT-123', 'CUST-456']
-```
-
-### Error: "Invalid partial match"
-
-```typescript
-// ❌ Error: Skipping middle attribute
-multiSk: ['USA', 'San Francisco'] // Can't skip state
-
-// ✅ Solution: Include all attributes up to desired level
-multiSk: ['USA', 'CA', 'San Francisco']
-```
-
-## References
-
-- [AWS Documentation: Multi-Attribute Keys](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.DesignPattern.MultiAttributeKeys.html)
-- [DynamoDB Best Practices](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)
-- [GSI Design Patterns](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-indexes.html)
+- [DynamoDB Multi-Attribute Keys Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html)
+- [Single-Table Design Patterns](./single-table-design.md)
+- [Access Patterns Guide](./access-patterns.md)

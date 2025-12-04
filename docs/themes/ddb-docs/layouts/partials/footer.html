@@ -1,0 +1,12 @@
+<footer class="site-footer">
+  <div class="footer-content">
+    <p>&copy; {{ now.Year }} ddb-lib. Licensed under MIT.</p>
+    <div class="footer-links">
+      {{ range .Site.Params.links.developer }}
+      <a href="{{ .url }}" target="_blank">
+        <i class="{{ .icon }}"></i> {{ .name }}
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</footer>

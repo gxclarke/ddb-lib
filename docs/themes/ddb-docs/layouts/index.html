@@ -1,0 +1,37 @@
+{{ define "main" }}
+<div class="homepage">
+  <div class="hero">
+    <h1>{{ .Site.Title }}</h1>
+    <p class="lead">{{ .Site.Params.description }}</p>
+    <div class="hero-buttons">
+      <a href="/getting-started/" class="btn btn-primary">Get Started</a>
+      <a href="/overview/" class="btn btn-secondary">Learn More</a>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <i class="fas fa-cube"></i>
+      <h3>Modular Packages</h3>
+      <p>Install only what you need - core utilities, stats, client, or Amplify integration</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-chart-line"></i>
+      <h3>Performance Monitoring</h3>
+      <p>Built-in statistics collection and optimization recommendations</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-shield-alt"></i>
+      <h3>Best Practices</h3>
+      <p>Pattern helpers and anti-pattern detection for DynamoDB excellence</p>
+    </div>
+    <div class="feature-card">
+      <i class="fas fa-code"></i>
+      <h3>Type Safe</h3>
+      <p>Full TypeScript support with type inference and validation</p>
+    </div>
+  </div>
+
+  {{ .Content }}
+</div>
+{{ end }}

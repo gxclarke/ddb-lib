@@ -1,0 +1,84 @@
+baseURL = "https://yourusername.github.io/ddb-lib/"
+title = "ddb-lib Documentation"
+theme = "ddb-docs"
+enableGitInfo = true
+enableRobotsTXT = true
+languageCode = "en-us"
+
+# Language settings
+contentDir = "content"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+
+[params]
+  description = "Modular TypeScript library for AWS DynamoDB with best practices, pattern helpers, and performance monitoring"
+  github_repo = "https://github.com/yourusername/ddb-lib"
+  github_branch = "main"
+  version = "0.1.0"
+  
+  # UI configuration
+  [params.ui]
+    sidebar_menu_compact = true
+    breadcrumb_disable = false
+    sidebar_search_disable = false
+    navbar_logo = true
+    footer_about_disable = false
+    
+  # Feedback
+  [params.ui.feedback]
+    enable = true
+    yes = "Glad to hear it! Please tell us how we can improve."
+    no = "Sorry to hear that. Please tell us how we can improve."
+  
+  # Links
+  [[params.links.developer]]
+    name = "GitHub"
+    url = "https://github.com/yourusername/ddb-lib"
+    icon = "fab fa-github"
+  [[params.links.developer]]
+    name = "npm"
+    url = "https://www.npmjs.com/org/ddb-lib"
+    icon = "fab fa-npm"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = "monokai"
+    lineNos = true
+    lineNumbersInTable = true
+
+[menu]
+  [[menu.main]]
+    name = "Overview"
+    weight = 10
+    url = "/overview/"
+  [[menu.main]]
+    name = "Getting Started"
+    weight = 20
+    url = "/getting-started/"
+  [[menu.main]]
+    name = "Guides"
+    weight = 30
+    url = "/guides/"
+  [[menu.main]]
+    name = "Patterns"
+    weight = 40
+    url = "/patterns/"
+  [[menu.main]]
+    name = "Best Practices"
+    weight = 50
+    url = "/best-practices/"
+  [[menu.main]]
+    name = "Anti-Patterns"
+    weight = 60
+    url = "/anti-patterns/"
+  [[menu.main]]
+    name = "API Reference"
+    weight = 70
+    url = "/api/"
+  [[menu.main]]
+    name = "Examples"
+    weight = 80
+    url = "/examples/"
