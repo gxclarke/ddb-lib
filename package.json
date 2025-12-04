@@ -35,9 +35,11 @@
 		"aws",
 		"typescript",
 		"schema",
-		"validation"
+		"validation",
+		"metrics",
+		"patterns"
 	],
-	"author": "",
+	"author": "Gary Clarke",
 	"license": "MIT",
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.7",

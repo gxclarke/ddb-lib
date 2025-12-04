@@ -1,0 +1,54 @@
+/* Custom styles for ddb-lib documentation */
+
+/* Brand colors */
+:root {
+  --md-primary-fg-color: #3f51b5;
+  --md-primary-fg-color--light: #5c6bc0;
+  --md-primary-fg-color--dark: #303f9f;
+  --md-accent-fg-color: #3f51b5;
+}
+
+/* Code block enhancements */
+.highlight .filename {
+  display: block;
+  padding: 0.5em 1em;
+  background-color: var(--md-code-bg-color);
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  font-weight: 700;
+  font-size: 0.85em;
+}
+
+/* Custom admonition styles */
+.md-typeset .admonition.tip {
+  border-color: #00c853;
+}
+
+.md-typeset .admonition.tip > .admonition-title {
+  background-color: rgba(0, 200, 83, 0.1);
+}
+
+/* Table improvements */
+.md-typeset table:not([class]) {
+  font-size: 0.85em;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-default-fg-color--lightest);
+}
+
+/* Responsive images */
+.md-typeset img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Code block styling */
+.md-typeset pre > code {
+  display: block;
+  overflow-x: auto;
+}
+
+/* Improve readability of inline code */
+.md-typeset code {
+  word-break: break-word;
+}

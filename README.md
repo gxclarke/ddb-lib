@@ -2,6 +2,10 @@
 
 A modular TypeScript library for AWS DynamoDB that provides best practices, pattern helpers, and performance monitoring. Works seamlessly with both standalone DynamoDB and AWS Amplify Gen 2.
 
+## 📖 Documentation
+
+**[https://ddb-lib.dev](https://ddb-lib.dev)** - Complete documentation with guides, examples, and API reference
+
 ## 📦 Packages
 
 This is a monorepo containing multiple packages that can be used independently or together:
@@ -13,9 +17,9 @@ This is a monorepo containing multiple packages that can be used independently o
 | [@ddb-lib/client](./packages/client) | Full-featured DynamoDB client | Standalone DynamoDB applications |
 | [@ddb-lib/amplify](./packages/amplify) | AWS Amplify Gen 2 integration | Amplify applications with monitoring |
 
-## 🚀 Quick Start
+## 🚀 Quick start
 
-### For Standalone DynamoDB
+### For standalone DynamoDB
 
 Install the client package (includes core and stats):
 
@@ -76,7 +80,7 @@ const stats = monitor.getStats()
 const recommendations = monitor.getRecommendations()
 ```
 
-### Using Core Utilities Only
+### Using core utilities only
 
 If you only need pattern helpers without a client:
 
@@ -94,51 +98,78 @@ const tenantKey = multiTenantKey('TENANT-1', 'CUST-123')
 
 ## ✨ Features
 
-### Core Utilities (@ddb-lib/core)
-- **Pattern Helpers**: Entity keys, composite keys, time-series keys, hierarchical keys
-- **Multi-Attribute Keys**: Native support for DynamoDB's multi-attribute composite keys
-- **Expression Builders**: Type-safe builders for key conditions, filters, and conditions
-- **Type Guards**: Runtime type checking utilities
-- **Zero Dependencies**: Pure TypeScript with no external dependencies
+### Core utilities (@ddb-lib/core)
+- **Pattern helpers**: Entity keys, composite keys, time-series keys, hierarchical keys
+- **Multi-attribute keys**: Native support for DynamoDB's multi-attribute composite keys
+- **Expression builders**: Type-safe builders for key conditions, filters, and conditions
+- **Type guards**: Runtime type checking utilities
+- **Zero dependencies**: Pure TypeScript with no external dependencies
 
-### Statistics & Monitoring (@ddb-lib/stats)
-- **Performance Tracking**: Automatic latency and capacity monitoring
-- **Anti-Pattern Detection**: Identifies scans, hot partitions, inefficient queries
+### Statistics and monitoring (@ddb-lib/stats)
+- **Performance tracking**: Automatic latency and capacity monitoring
+- **Anti-pattern detection**: Identifies scans, hot partitions, inefficient queries
 - **Recommendations**: Actionable suggestions for optimization
-- **Framework Agnostic**: Works with any data access layer
+- **Framework agnostic**: Works with any data access layer
 
-### Standalone Client (@ddb-lib/client)
+### Standalone client (@ddb-lib/client)
 - **Complete DynamoDB API**: All operations with simplified interface
-- **Automatic Batching**: Intelligent chunking for batch operations
-- **Retry Logic**: Configurable exponential backoff
-- **Access Patterns**: Named, reusable query patterns
-- **Type Safety**: Full TypeScript support with inference
+- **Automatic batching**: Intelligent chunking for batch operations
+- **Retry logic**: Configurable exponential backoff
+- **Access patterns**: Named, reusable query patterns
+- **Type safety**: Full TypeScript support with inference
 
-### Amplify Integration (@ddb-lib/amplify)
-- **Seamless Integration**: Works with Amplify Gen 2 data client
-- **Automatic Monitoring**: Zero-config operation tracking
-- **Pattern Helpers**: Use DynamoDB best practices with Amplify
-- **Type Safe**: Preserves Amplify's type definitions
+### Amplify integration (@ddb-lib/amplify)
+- **Seamless integration**: Works with Amplify Gen 2 data client
+- **Automatic monitoring**: Zero-config operation tracking
+- **Pattern helpers**: Use DynamoDB best practices with Amplify
+- **Type safe**: Preserves Amplify's type definitions
 
-## 📚 Documentation
+## 📚 Full documentation
 
-- **[Core Package Documentation](./packages/core/README.md)** - Pattern helpers and utilities
-- **[Stats Package Documentation](./packages/stats/README.md)** - Monitoring and recommendations
-- **[Client Package Documentation](./packages/client/README.md)** - Standalone TableClient
-- **[Amplify Package Documentation](./packages/amplify/README.md)** - Amplify Gen 2 integration
-- **[Complete API Reference](./API.md)** - Detailed API documentation
+Visit **[https://ddb-lib.dev](https://ddb-lib.dev)** for comprehensive documentation including:
+
+- **Getting started** - Installation and setup guides
+- **Usage guides** - Core operations, queries, batch operations, transactions
+- **DynamoDB patterns** - Entity keys, composite keys, time-series, hierarchical data
+- **Best practices** - Query optimization, key design, capacity planning
+- **Anti-patterns** - Common mistakes and how to avoid them
+- **API reference** - Complete API documentation for all packages
+- **Examples** - Real-world code examples for standalone and Amplify
+
+### Package documentation
+
+- **[Core package documentation](./packages/core/README.md)** - Pattern helpers and utilities
+- **[Stats package documentation](./packages/stats/README.md)** - Monitoring and recommendations
+- **[Client package documentation](./packages/client/README.md)** - Standalone TableClient
+- **[Amplify package documentation](./packages/amplify/README.md)** - Amplify Gen 2 integration
+- **[Complete API reference](./API.md)** - Detailed API documentation
+
+### Building documentation locally
+
+The documentation is built with MkDocs and Material theme:
+
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Serve documentation locally
+python3 -m mkdocs serve
+
+# Build static site
+python3 -m mkdocs build
+```
 
 ## 📖 Examples
 
-### Standalone Examples
-- [Basic CRUD Operations](./examples/standalone/basic-crud.ts)
-- [Single-Table Design](./examples/standalone/single-table-design.ts)
-- [Statistics Monitoring](./examples/standalone/stats-monitoring.ts)
+### Standalone examples
+- [Basic CRUD operations](./examples/standalone/basic-crud.ts)
+- [Single-table design](./examples/standalone/single-table-design.ts)
+- [Statistics monitoring](./examples/standalone/stats-monitoring.ts)
 
-### Amplify Examples
-- [Basic Amplify Usage](./examples/amplify/basic-usage.ts)
-- [Amplify with Monitoring](./examples/amplify/with-monitoring.ts)
-- [Pattern Helpers with Amplify](./examples/amplify/pattern-helpers.ts)
+### Amplify examples
+- [Basic Amplify usage](./examples/amplify/basic-usage.ts)
+- [Amplify with monitoring](./examples/amplify/with-monitoring.ts)
+- [Pattern helpers with Amplify](./examples/amplify/pattern-helpers.ts)
 
 ## 🏗️ Architecture
 
@@ -166,9 +197,9 @@ const tenantKey = multiTenantKey('TENANT-1', 'CUST-123')
 └───────────────────┘              └──────────────────────┘
 ```
 
-## 🎯 Use Cases
+## 🎯 Use cases
 
-### When to Use Each Package
+### When to use each package
 
 **@ddb-lib/core**
 - You need pattern helpers for key construction
@@ -235,38 +266,40 @@ MIT
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/yourusername/ddb-lib)
-- [npm Organization](https://www.npmjs.com/org/ddb-lib)
-- [Documentation](./docs)
+- **[Documentation](https://ddb-lib.dev)** - Complete guides and API reference
+- [GitHub repository](https://github.com/gxclarke/ddb-lib)
+- [npm organization](https://www.npmjs.com/org/ddb-lib)
 - [Examples](./examples)
 
-## 💡 Why Modular?
+## 💡 Why modular?
 
 The modular architecture allows you to:
 
-1. **Minimize Bundle Size**: Install only what you need
-2. **Mix and Match**: Use utilities with any data access layer
-3. **Framework Agnostic**: Core utilities work everywhere
-4. **Easy Migration**: Move between standalone and Amplify easily
-5. **Tree-Shaking**: Unused code is eliminated from your bundle
+1. **Minimize bundle size**: Install only what you need
+2. **Mix and match**: Use utilities with any data access layer
+3. **Framework agnostic**: Core utilities work everywhere
+4. **Easy migration**: Move between standalone and Amplify easily
+5. **Tree-shaking**: Unused code is eliminated from your bundle
 
 ## 🆚 Comparison
 
 | Feature | @ddb-lib/client | @ddb-lib/amplify | Raw DynamoDB SDK | Amplify Data |
 |---------|----------------|------------------|------------------|--------------|
-| Type Safety | ✅ | ✅ | ⚠️ Partial | ✅ |
-| Pattern Helpers | ✅ | ✅ | ❌ | ❌ |
-| Performance Monitoring | ✅ | ✅ | ❌ | ❌ |
-| Anti-Pattern Detection | ✅ | ✅ | ❌ | ❌ |
+| Type safety | ✅ | ✅ | ⚠️ Partial | ✅ |
+| Pattern helpers | ✅ | ✅ | ❌ | ❌ |
+| Performance monitoring | ✅ | ✅ | ❌ | ❌ |
+| Anti-Pattern detection | ✅ | ✅ | ❌ | ❌ |
 | Simplified API | ✅ | ✅ | ❌ | ✅ |
-| Multi-Attribute Keys | ✅ | ✅ | ⚠️ Manual | ⚠️ Manual |
-| GraphQL Integration | ❌ | ✅ | ❌ | ✅ |
-| Authorization Rules | ❌ | ✅ | ❌ | ✅ |
+| Multi-attribute keys | ✅ | ✅ | ⚠️ Manual | ⚠️ Manual |
+| GraphQL integration | ❌ | ✅ | ❌ | ✅ |
+| Authorization rules | ❌ | ✅ | ❌ | ✅ |
 
-## 🎓 Learn More
+## 🎓 Learn more
 
-- [DynamoDB Best Practices](./docs/best-practices.md)
-- [Single-Table Design Guide](./docs/single-table-design.md)
-- [Multi-Attribute Keys](./docs/multi-attribute-keys.md)
-- [Performance Optimization](./docs/performance.md)
-- [Migration Guide](./docs/migration.md)
+Visit **[https://ddb-lib.dev](https://ddb-lib.dev)** for:
+
+- [DynamoDB best practices](https://ddb-lib.dev/best-practices/)
+- [Design patterns](https://ddb-lib.dev/patterns/)
+- [Multi-attribute keys](https://ddb-lib.dev/guides/multi-attribute-keys/)
+- [Performance optimization](https://ddb-lib.dev/guides/monitoring/)
+- [Complete API reference](https://ddb-lib.dev/api/)

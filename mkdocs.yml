@@ -1,0 +1,220 @@
+# MkDocs Configuration for ddb-lib Documentation
+site_name: ddb-lib
+site_url: https://ddb-lib.dev/
+use_directory_urls: true
+site_description: Modular TypeScript library for AWS DynamoDB with best practices
+site_author: ddb-lib contributors
+repo_url: https://github.com/gxclarke/ddb-lib
+repo_name: gxclarke/ddb-lib
+edit_uri: edit/main/mkdocs-docs/
+
+# Documentation directory
+docs_dir: mkdocs-docs
+
+# Copyright
+copyright: Copyright &copy; 2024 ddb-lib contributors
+
+# Theme configuration
+theme:
+  name: material
+  language: en
+  
+  # Color scheme
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  # Fonts
+  font:
+    text: Roboto
+    code: Roboto Mono
+  
+  # Features
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - toc.integrate
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+      cache_safe: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+
+# Markdown extensions
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      toc_depth: 3
+  
+  # PyMdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Extra configuration
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/gxclarke/ddb-lib
+      name: GitHub Repository
+    - icon: fontawesome/brands/npm
+      link: https://www.npmjs.com/org/ddb-lib
+      name: npm Packages
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - Overview:
+      - overview/index.md
+      - Architecture: overview/architecture.md
+      - Packages: overview/packages.md
+      - Comparison: overview/comparison.md
+  - Getting started:
+      - getting-started/index.md
+      - Installation: getting-started/installation.md
+      - Standalone: getting-started/standalone.md
+      - Amplify: getting-started/amplify.md
+      - First app: getting-started/first-app.md
+  - Guides:
+      - guides/index.md
+      - Core operations: guides/core-operations/index.md
+      - Query & scan: guides/query-and-scan/index.md
+      - Batch operations: guides/batch-operations/index.md
+      - Transactions: guides/transactions/index.md
+      - Access patterns: guides/access-patterns/index.md
+      - Monitoring: guides/monitoring/index.md
+      - Multi-attribute keys: guides/multi-attribute-keys/index.md
+  - Patterns:
+      - patterns/index.md
+      - Entity keys: patterns/entity-keys.md
+      - Composite keys: patterns/composite-keys.md
+      - Time-series: patterns/time-series.md
+      - Hierarchical: patterns/hierarchical.md
+      - Adjacency list: patterns/adjacency-list.md
+      - Hot partition distribution: patterns/hot-partition-distribution.md
+      - Sparse indexes: patterns/sparse-indexes.md
+      - Multi-attribute keys: patterns/multi-attribute-keys.md
+  - Best practices:
+      - best-practices/index.md
+      - Query vs scan: best-practices/query-vs-scan.md
+      - Projection expressions: best-practices/projection-expressions.md
+      - Batch operations: best-practices/batch-operations.md
+      - Conditional writes: best-practices/conditional-writes.md
+      - Capacity planning: best-practices/capacity-planning.md
+      - Key design: best-practices/key-design.md
+  - Anti-patterns:
+      - anti-patterns/index.md
+      - Table scans: anti-patterns/table-scans.md
+      - Hot partitions: anti-patterns/hot-partitions.md
+      - String concatenation: anti-patterns/string-concatenation.md
+      - Read-before-write: anti-patterns/read-before-write.md
+      - Missing projections: anti-patterns/missing-projections.md
+      - Inefficient batching: anti-patterns/inefficient-batching.md
+  - API Reference:
+      - api/index.md
+      - "@ddb-lib/core": api/core/index.md
+      - "@ddb-lib/stats": api/stats/index.md
+      - "@ddb-lib/client": api/client/index.md
+      - "@ddb-lib/amplify": api/amplify/index.md
+  - Examples:
+      - examples/index.md
+      - Standalone:
+          - examples/standalone/index.md
+          - Basic CRUD: examples/standalone/basic-crud.md
+          - Single table design: examples/standalone/single-table-design.md
+          - Stats monitoring: examples/standalone/stats-monitoring.md
+      - Amplify:
+          - examples/amplify/index.md
+          - Basic usage: examples/amplify/basic-usage.md
+          - Pattern helpers: examples/amplify/pattern-helpers.md
+          - Monitoring: examples/amplify/monitoring.md
+  - Contributing:
+      - contributing/index.md
+      - Setup: contributing/setup.md
+      - Documentation: contributing/documentation.md
+
+# Custom CSS and JavaScript
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
