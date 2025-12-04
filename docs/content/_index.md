@@ -1,70 +1,102 @@
 ---
-title: "ddb-lib Documentation"
+title: "ddb-lib"
+linkTitle: "Documentation"
 description: "Modular TypeScript library for AWS DynamoDB with best practices, pattern helpers, and performance monitoring"
+type: docs
 ---
 
-## Welcome to ddb-lib
+{{< blocks/cover title="ddb-lib" image_anchor="top" height="full" color="primary" >}}
+<div class="mx-auto">
+	<a class="btn btn-lg btn-primary mr-3 mb-4" href="{{< relref "/getting-started" >}}">
+		Get Started <i class="fas fa-arrow-alt-circle-right ml-2"></i>
+	</a>
+	<a class="btn btn-lg btn-secondary mr-3 mb-4" href="https://github.com/gxclarke/ddb-lib">
+		GitHub <i class="fab fa-github ml-2 "></i>
+	</a>
+	<p class="lead mt-5">A modular TypeScript library that makes working with AWS DynamoDB easier, faster, and more reliable.</p>
+	{{< blocks/link-down color="info" >}}
+</div>
+{{< /blocks/cover >}}
 
-A modular TypeScript library that makes working with AWS DynamoDB easier, faster, and more reliable. Whether you're building with standalone DynamoDB or AWS Amplify Gen 2, ddb-lib provides the tools you need to implement best practices and avoid common pitfalls.
+{{% blocks/lead color="primary" %}}
+Whether you're building with standalone DynamoDB or AWS Amplify Gen 2, ddb-lib provides the tools you need to implement best practices and avoid common pitfalls.
 
-## Quick Links
+**Modular • Type-Safe • Performance-Focused**
+{{% /blocks/lead %}}
 
-<div class="quick-links">
-  <a href="/getting-started/" class="quick-link-card">
-    <i class="fas fa-rocket"></i>
-    <h3>Getting Started</h3>
-    <p>Install and configure ddb-lib in minutes</p>
-  </a>
-  
-  <a href="/patterns/" class="quick-link-card">
-    <i class="fas fa-puzzle-piece"></i>
-    <h3>Patterns</h3>
-    <p>Learn DynamoDB design patterns</p>
-  </a>
-  
-  <a href="/best-practices/" class="quick-link-card">
-    <i class="fas fa-star"></i>
-    <h3>Best Practices</h3>
-    <p>Optimize performance and cost</p>
-  </a>
-  
-  <a href="/api/" class="quick-link-card">
-    <i class="fas fa-book"></i>
-    <h3>API Reference</h3>
-    <p>Complete API documentation</p>
-  </a>
+{{< blocks/section color="dark" >}}
+{{% blocks/feature icon="fa-lightbulb" title="Modular Architecture" %}}
+Install only what you need. Use core utilities standalone, add monitoring, or integrate with Amplify.
+{{% /blocks/feature %}}
+
+{{% blocks/feature icon="fa-chart-line" title="Performance Monitoring" %}}
+Built-in statistics collection, anti-pattern detection, and actionable recommendations.
+{{% /blocks/feature %}}
+
+{{% blocks/feature icon="fa-shield-alt" title="Best Practices Built-In" %}}
+Pattern helpers, multi-attribute keys, and utilities that guide you toward optimal DynamoDB usage.
+{{% /blocks/feature %}}
+
+{{% blocks/feature icon="fa-code" title="Type Safe" %}}
+Full TypeScript support with type inference and validation throughout.
+{{% /blocks/feature %}}
+
+{{% blocks/feature icon="fa-puzzle-piece" title="DynamoDB Patterns" %}}
+Learn and implement proven DynamoDB design patterns with helper functions.
+{{% /blocks/feature %}}
+
+{{% blocks/feature icon="fa-rocket" title="Quick Start" %}}
+Get up and running in minutes with comprehensive guides and examples.
+{{% /blocks/feature %}}
+
+{{< /blocks/section >}}
+
+{{< blocks/section >}}
+<div class="col-12">
+<h2 class="text-center">Package Overview</h2>
 </div>
 
-## Why ddb-lib?
+{{% blocks/feature icon="fa-cube" title="@ddb-lib/core" url="/api/core/" %}}
+Pattern helpers and utilities for DynamoDB best practices.
 
-### 🎯 Modular Architecture
+```bash
+npm install @ddb-lib/core
+```
+{{% /blocks/feature %}}
 
-Install only what you need. Use core utilities standalone, add monitoring, or integrate with Amplify.
+{{% blocks/feature icon="fa-chart-bar" title="@ddb-lib/stats" url="/api/stats/" %}}
+Performance monitoring and anti-pattern detection.
 
-### 📊 Performance Monitoring
+```bash
+npm install @ddb-lib/stats
+```
+{{% /blocks/feature %}}
 
-Built-in statistics collection, anti-pattern detection, and actionable recommendations.
+{{% blocks/feature icon="fa-database" title="@ddb-lib/client" url="/api/client/" %}}
+Standalone DynamoDB client with monitoring.
 
-### 🛡️ Best Practices Built-In
+```bash
+npm install @ddb-lib/client
+```
+{{% /blocks/feature %}}
 
-Pattern helpers, multi-attribute keys, and utilities that guide you toward optimal DynamoDB usage.
+{{% blocks/feature icon="fa-aws" title="@ddb-lib/amplify" url="/api/amplify/" %}}
+Seamless Amplify Gen 2 integration.
 
-### 🔒 Type Safe
+```bash
+npm install @ddb-lib/amplify
+```
+{{% /blocks/feature %}}
 
-Full TypeScript support with type inference and validation throughout.
+{{< /blocks/section >}}
 
-## Package Overview
+{{< blocks/section color="white" >}}
+<div class="col-12">
+<h2 class="text-center mb-5">Quick Examples</h2>
+</div>
 
-| Package | Purpose | Install |
-|---------|---------|---------|
-| [@ddb-lib/core](/api/core/) | Pattern helpers and utilities | `npm install @ddb-lib/core` |
-| [@ddb-lib/stats](/api/stats/) | Performance monitoring | `npm install @ddb-lib/stats` |
-| [@ddb-lib/client](/api/client/) | Standalone DynamoDB client | `npm install @ddb-lib/client` |
-| [@ddb-lib/amplify](/api/amplify/) | Amplify Gen 2 integration | `npm install @ddb-lib/amplify` |
-
-## Quick Example
-
-### Standalone Usage
+<div class="col-lg-6">
+<h3>Standalone Usage</h3>
 
 ```typescript
 import { TableClient } from '@ddb-lib/client'
@@ -79,78 +111,60 @@ const table = new TableClient({
 const userKey = PatternHelpers.entityKey('USER', '123')
 
 // Perform operations
-await table.put({ pk: userKey, sk: 'PROFILE', name: 'Alice' })
-const user = await table.get({ pk: userKey, sk: 'PROFILE' })
+await table.put({ 
+  pk: userKey, 
+  sk: 'PROFILE', 
+  name: 'Alice' 
+})
 
 // Get recommendations
 const recommendations = table.getRecommendations()
 ```
+</div>
 
-### Amplify Integration
+<div class="col-lg-6">
+<h3>Amplify Integration</h3>
 
 ```typescript
 import { generateClient } from 'aws-amplify/data'
 import { AmplifyMonitor } from '@ddb-lib/amplify'
 
 const client = generateClient()
-const monitor = new AmplifyMonitor({ statsConfig: { enabled: true } })
+const monitor = new AmplifyMonitor({ 
+  statsConfig: { enabled: true } 
+})
 
 // Wrap your model
-const monitoredTodos = monitor.wrap(client.models.Todo)
+const monitoredTodos = monitor.wrap(
+  client.models.Todo
+)
 
 // Operations are automatically monitored
-await monitoredTodos.create({ title: 'Buy groceries' })
+await monitoredTodos.create({ 
+  title: 'Buy groceries' 
+})
 
 // Get insights
 const stats = monitor.getStats()
-const recommendations = monitor.getRecommendations()
 ```
+</div>
 
-## What's Next?
+{{< /blocks/section >}}
 
-- **New to DynamoDB?** Start with our [Getting Started Guide](/getting-started/)
-- **Want to learn patterns?** Explore [DynamoDB Patterns](/patterns/)
-- **Need API docs?** Check the [API Reference](/api/)
-- **Looking for examples?** Browse [Code Examples](/examples/)
-
-<style>
-.quick-links {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-.quick-link-card {
-  padding: 2rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  text-align: center;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s;
-}
-
-.quick-link-card:hover {
-  border-color: #4CAF50;
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.quick-link-card i {
-  font-size: 2.5rem;
-  color: #4CAF50;
-  margin-bottom: 1rem;
-}
-
-.quick-link-card h3 {
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.quick-link-card p {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0;
-}
-</style>
+{{< blocks/section color="primary" >}}
+<div class="col-12 text-center">
+<h2>Ready to Get Started?</h2>
+<p class="lead">Choose your path and start building better DynamoDB applications today.</p>
+<div class="mt-4">
+<a class="btn btn-lg btn-light mr-3 mb-3" href="{{< relref "/getting-started" >}}">
+  <i class="fas fa-rocket mr-2"></i>Getting Started
+</a>
+<a class="btn btn-lg btn-light mr-3 mb-3" href="{{< relref "/patterns" >}}">
+  <i class="fas fa-puzzle-piece mr-2"></i>Learn Patterns
+</a>
+<a class="btn btn-lg btn-light mr-3 mb-3" href="{{< relref "/examples" >}}">
+  <i class="fas fa-code mr-2"></i>View Examples
+</a>
+</div>
+</div>
+{{< /blocks/section >}}

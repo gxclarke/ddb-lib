@@ -1,12 +1,12 @@
-<footer class="site-footer">
+<footer class="site-footer" role="contentinfo">
   <div class="footer-content">
     <p>&copy; {{ now.Year }} ddb-lib. Licensed under MIT.</p>
-    <div class="footer-links">
+    <nav class="footer-links" aria-label="Footer links">
       {{ range .Site.Params.links.developer }}
-      <a href="{{ .url }}" target="_blank">
-        <i class="{{ .icon }}"></i> {{ .name }}
+      <a href="{{ .url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .name }} (opens in new tab)">
+        <i class="{{ .icon }}" aria-hidden="true"></i> {{ .name }}
       </a>
       {{ end }}
-    </div>
+    </nav>
   </div>
 </footer>

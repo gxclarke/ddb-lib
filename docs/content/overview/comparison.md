@@ -1,6 +1,7 @@
 ---
 title: "Comparison"
 description: "Compare ddb-lib with alternatives"
+type: docs
 weight: 30
 ---
 

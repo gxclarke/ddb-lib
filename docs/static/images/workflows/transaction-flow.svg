@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650">
+  <defs>
+    <style>
+      .box { fill: #E3F2FD; stroke: #1976D2; stroke-width: 2; }
+      .process { fill: #FFF9C4; stroke: #F57C00; stroke-width: 2; }
+      .success { fill: #C8E6C9; stroke: #388E3C; stroke-width: 2; }
+      .failure { fill: #FFCDD2; stroke: #C62828; stroke-width: 2; }
+      .decision { fill: #FFE0B2; stroke: #E65100; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 13px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; }
+      .label { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }
+      .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+      .arrow-yes { fill: none; stroke: #4CAF50; stroke-width: 2; marker-end: url(#arrowhead-yes); }
+      .arrow-no { fill: none; stroke: #F44336; stroke-width: 2; marker-end: url(#arrowhead-no); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+    <marker id="arrowhead-yes" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#4CAF50" />
+    </marker>
+    <marker id="arrowhead-no" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#F44336" />
+    </marker>
+  </defs>
+  
+  <text class="title" x="450" y="35" text-anchor="middle">DynamoDB Transaction Flow</text>
+  
+  <!-- Start -->
+  <ellipse cx="450" cy="80" rx="100" ry="30" class="box"/>
+  <text class="text" x="450" y="85">Begin Transaction</text>
+  
+  <path class="arrow" d="M 450 110 L 450 150"/>
+  
+  <!-- Prepare operations -->
+  <rect class="box" x="330" y="150" width="240" height="60" rx="5"/>
+  <text class="text" x="450" y="175">Prepare Operations</text>
+  <text class="label" x="450" y="195">(Put, Update, Delete, Check)</text>
+  
+  <path class="arrow" d="M 450 210 L 450 250"/>
+  
+  <!-- Operations -->
+  <rect class="process" x="100" y="250" width="150" height="50" rx="5"/>
+  <text class="text" x="175" y="270">Put Item</text>
+  <text class="label" x="175" y="285">account balance</text>
+  
+  <rect class="process" x="270" y="250" width="150" height="50" rx="5"/>
+  <text class="text" x="345" y="270">Update Item</text>
+  <text class="label" x="345" y="285">deduct amount</text>
+  
+  <rect class="process" x="440" y="250" width="150" height="50" rx="5"/>
+  <text class="text" x="515" y="270">Check Item</text>
+  <text class="label" x="515" y="285">sufficient funds</text>
+  
+  <rect class="process" x="610" y="250" width="150" height="50" rx="5"/>
+  <text class="text" x="685" y="270">Put Item</text>
+  <text class="label" x="685" y="285">transaction log</text>
+  
+  <path class="arrow" d="M 450 300 L 450 340"/>
+  
+  <!-- Validate -->
+  <rect class="process" x="330" y="340" width="240" height="60" rx="5"/>
+  <text class="text" x="450" y="365">Validate All Operations</text>
+  <text class="label" x="450" y="385">(Check conditions & conflicts)</text>
+  
+  <path class="arrow" d="M 450 400 L 450 440"/>
+  
+  <!-- Decision -->
+  <path d="M 450 440 L 550 490 L 450 540 L 350 490 Z" class="decision"/>
+  <text class="text" x="450" y="485">All Valid?</text>
+  <text class="text" x="450" y="500">No Conflicts?</text>
+  
+  <!-- Yes path - Commit -->
+  <path class="arrow-yes" d="M 350 490 L 250 490 L 250 560"/>
+  <text class="label" x="280" y="485" fill="#4CAF50">Yes</text>
+  
+  <rect class="success" x="150" y="560" width="200" height="60" rx="5"/>
+  <text class="text" x="250" y="585">Commit Transaction</text>
+  <text class="label" x="250" y="605">All changes applied</text>
+  
+  <!-- No path - Rollback -->
+  <path class="arrow-no" d="M 550 490 L 650 490 L 650 560"/>
+  <text class="label" x="620" y="485" fill="#F44336">No</text>
+  
+  <rect class="failure" x="550" y="560" width="200" height="60" rx="5"/>
+  <text class="text" x="650" y="585">Rollback Transaction</text>
+  <text class="label" x="650" y="605">No changes applied</text>
+  
+  <!-- Final states -->
+  <path class="arrow" d="M 250 620 L 350 620"/>
+  <path class="arrow" d="M 650 620 L 550 620"/>
+  
+  <ellipse cx="450" cy="620" rx="80" ry="30" class="box"/>
+  <text class="text" x="450" y="625">Complete</text>
+  
+  <!-- ACID properties box -->
+  <rect x="50" y="50" width="220" height="160" rx="5" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
+  <text class="text" x="160" y="75" font-weight="bold">ACID Properties:</text>
+  <text class="label" x="60" y="100" text-anchor="start" font-weight="bold">Atomic:</text>
+  <text class="label" x="60" y="115" text-anchor="start">All or nothing</text>
+  <text class="label" x="60" y="135" text-anchor="start" font-weight="bold">Consistent:</text>
+  <text class="label" x="60" y="150" text-anchor="start">Valid state always</text>
+  <text class="label" x="60" y="170" text-anchor="start" font-weight="bold">Isolated:</text>
+  <text class="label" x="60" y="185" text-anchor="start">No interference</text>
+  <text class="label" x="60" y="200" text-anchor="start" font-weight="bold">Durable:</text>
+  <text class="label" x="60" y="215" text-anchor="start">Changes persist</text>
+  
+  <!-- Limits box -->
+  <rect x="630" y="50" width="220" height="140" rx="5" fill="#FFF3E0" stroke="#F57C00" stroke-width="2"/>
+  <text class="text" x="740" y="75" font-weight="bold">Transaction Limits:</text>
+  <text class="label" x="640" y="100" text-anchor="start">• Max 100 operations</text>
+  <text class="label" x="640" y="120" text-anchor="start">• Max 4 MB total size</text>
+  <text class="label" x="640" y="140" text-anchor="start">• Same region only</text>
+  <text class="label" x="640" y="160" text-anchor="start">• 2x WCU cost</text>
+  <text class="label" x="640" y="180" text-anchor="start">• Serializable isolation</text>
+</svg>

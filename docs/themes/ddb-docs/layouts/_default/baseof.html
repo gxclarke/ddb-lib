@@ -4,20 +4,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+
+  <!-- SEO: Title -->
+  <title>{{ block "title" . }}{{ if .IsHome }}{{ .Site.Title }} - {{ .Site.Params.description }}{{ else }}{{ .Title }} |
+    {{ .Site.Title }}{{ end }}{{ end }}</title>
+
+  <!-- SEO: Description -->
+  {{ if .Description }}
+  <meta name="description" content="{{ .Description }}">
+  {{ else if .Summary }}
+  <meta name="description" content="{{ .Summary }}">
+  {{ else }}
   <meta name="description" content="{{ .Site.Params.description }}">
+  {{ end }}
+
+  <!-- SEO: Keywords -->
+  {{ if .Keywords }}
+  <meta name="keywords" content="{{ delimit .Keywords " , " }}">
+  {{ else if .Params.tags }}
+  <meta name="keywords" content="{{ delimit .Params.tags " , " }}">
+  {{ end }}
+
+  <!-- SEO: Author -->
+  <meta name="author" content="{{ .Site.Params.copyright }}">
+
+  <!-- SEO: Canonical URL -->
+  <link rel="canonical" href="{{ .Permalink }}">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+  {{ if .Description }}
+  <meta property="og:description" content="{{ .Description }}">
+  {{ else if .Summary }}
+  <meta property="og:description" content="{{ .Summary }}">
+  {{ else }}
+  <meta property="og:description" content="{{ .Site.Params.description }}">
+  {{ end }}
+  <meta property="og:site_name" content="{{ .Site.Title }}">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="{{ .Permalink }}">
+  <meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+  {{ if .Description }}
+  <meta name="twitter:description" content="{{ .Description }}">
+  {{ else if .Summary }}
+  <meta name="twitter:description" content="{{ .Summary }}">
+  {{ else }}
+  <meta name="twitter:description" content="{{ .Site.Params.description }}">
+  {{ end }}
+
+  <!-- SEO: Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "{{ if .IsHome }}WebSite{{ else }}WebPage{{ end }}",
+    "name": "{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}",
+    "url": "{{ .Permalink }}",
+    "description": "{{ if .Description }}{{ .Description }}{{ else if .Summary }}{{ .Summary }}{{ else }}{{ .Site.Params.description }}{{ end }}",
+    {{ if .IsHome }}
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "{{ .Site.BaseURL }}search/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    {{ end }}
+    "publisher": {
+      "@type": "Organization",
+      "name": "{{ .Site.Title }}",
+      "url": "{{ .Site.BaseURL }}"
+    }
+  }
+  </script>
+
+  <!-- Accessibility: Prefers color scheme -->
+  <meta name="color-scheme" content="light dark">
+
+  <!-- SEO: Robots -->
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="{{ " css/style.css" | relURL }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 </head>
 
 <body>
+  <!-- Skip to main content link for keyboard navigation -->
+  <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
   {{ block "header" . }}{{ partial "header.html" . }}{{ end }}
 
   <div class="container">
     {{ block "sidebar" . }}{{ partial "sidebar.html" . }}{{ end }}
 
-    <main class="content">
+    <!-- Main content with proper ARIA landmark -->
+    <main id="main-content" class="content" role="main" aria-label="Main content">
       {{ block "main" . }}{{ end }}
     </main>
   </div>

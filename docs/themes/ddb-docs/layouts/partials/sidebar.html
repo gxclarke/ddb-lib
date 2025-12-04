@@ -1,11 +1,12 @@
-<aside class="sidebar">
+<aside class="sidebar" role="complementary" aria-label="Sidebar navigation">
   <div class="sidebar-content">
     {{ if .IsPage }}
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Documentation sections">
       {{ $currentPage := . }}
       {{ range .Site.Menus.main }}
       <div class="nav-section">
-        <a href="{{ .URL }}" class="nav-section-title{{ if eq $currentPage.Section .Identifier }} active{{ end }}">
+        <a href="{{ .URL }}" class="nav-section-title{{ if eq $currentPage.Section .Identifier }} active{{ end }}" {{ if
+          eq $currentPage.Section .Identifier }}aria-current="page" {{ end }}>
           {{ .Name }}
         </a>
       </div>

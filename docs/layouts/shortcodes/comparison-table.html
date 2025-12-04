@@ -1,0 +1,31 @@
+<div class="comparison-table my-4">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="comparison-bad p-3 border border-danger rounded bg-light">
+        <h5 class="text-danger"><i class="fas fa-times-circle"></i> {{ .Get "bad-title" | default "❌ Don't Do This" }}
+        </h5>
+        <div class="comparison-content">
+          {{ if .Inner }}
+          {{ .Inner | markdownify }}
+          {{ else if .Get "bad" }}
+          {{ .Get "bad" | markdownify }}
+          {{ end }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="comparison-good p-3 border border-success rounded bg-light">
+        <h5 class="text-success"><i class="fas fa-check-circle"></i> {{ .Get "good-title" | default "✅ Do This Instead"
+          }}</h5>
+        <div class="comparison-content">
+          {{ .Get "good" | markdownify }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ if .Get "explanation" }}
+  <div class="comparison-explanation mt-3 p-3 bg-info text-white rounded">
+    <strong>Why:</strong> {{ .Get "explanation" }}
+  </div>
+  {{ end }}
+</div>

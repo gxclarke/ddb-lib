@@ -1,6 +1,7 @@
 ---
 title: "Packages"
 description: "Detailed overview of each ddb-lib package"
+type: docs
 weight: 20
 ---
 

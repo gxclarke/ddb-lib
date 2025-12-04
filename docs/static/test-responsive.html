@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Layout Test - ddb-lib</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .test-section {
+      margin: 2rem 0;
+      padding: 2rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    .test-section h2 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+
+    .viewport-indicator {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background: var(--primary-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      z-index: 1000;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+  <!-- Header -->
+  <header class="site-header">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <a href="/">ddb-lib</a>
+      </div>
+      <div class="navbar-right">
+        <div class="navbar-menu">
+          <a href="/overview/" class="nav-link">Overview</a>
+          <a href="/getting-started/" class="nav-link">Getting Started</a>
+          <a href="/guides/" class="nav-link">Guides</a>
+          <a href="/patterns/" class="nav-link">Patterns</a>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-section-title active">Test Section 1</a>
+        <a href="#" class="nav-section-title">Test Section 2</a>
+        <a href="#" class="nav-section-title">Test Section 3</a>
+        <a href="#" class="nav-section-title">Test Section 4</a>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <main id="main-content" class="content">
+      <div class="doc-content">
+        <h1>Responsive Layout Test</h1>
+        <p class="lead">This page tests responsive layouts at different viewport sizes.</p>
+
+        <!-- Test: Pattern Diagram -->
+        <div class="test-section">
+          <h2>Pattern Diagram (Responsive)</h2>
+          <div class="pattern-diagram">
+            <div class="diagram-container">
+              <svg width="400" height="200" viewBox="0 0 400 200">
+                <rect x="50" y="50" width="300" height="100" fill="var(--primary-color)" opacity="0.3" />
+                <text x="200" y="105" text-anchor="middle" fill="var(--text-color)">Test Diagram</text>
+              </svg>
+            </div>
+            <p class="diagram-caption">This diagram should scale on mobile</p>
+          </div>
+        </div>
+
+        <!-- Test: Comparison Table -->
+        <div class="test-section">
+          <h2>Comparison Table (Stacks on Mobile)</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>✅ Good Practice</th>
+                  <th>❌ Anti-Pattern</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="good-practice">
+                    <p>Use queries with key conditions</p>
+                    <code>query({ pk: 'USER#123' })</code>
+                  </td>
+                  <td class="bad-practice">
+                    <p>Use scans with filters</p>
+                    <code>scan({ filter: { userId: '123' } })</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Test: Code Example -->
+        <div class="test-section">
+          <h2>Code Example (Scrollable on Mobile)</h2>
+          <div class="code-example">
+            <div class="code-title">Example Code</div>
+            <div class="code-container">
+              <button class="copy-button">Copy</button>
+              <pre><code>import { TableClient } from '@ddb-lib/client';
+
+const client = new TableClient({
+  tableName: 'MyTable',
+  region: 'us-east-1'
+});
+
+const result = await client.get({
+  pk: 'USER#123',
+  sk: 'PROFILE'
+});</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test: Alert Boxes -->
+        <div class="test-section">
+          <h2>Alert Boxes (Stack on Mobile)</h2>
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <div class="alert-content">
+              <div class="alert-title">Info Alert</div>
+              <p>This is an informational message that should stack on mobile.</p>
+            </div>
+          </div>
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div class="alert-content">
+              <div class="alert-title">Warning Alert</div>
+              <p>This is a warning message.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test: Feature Cards -->
+        <div class="test-section">
+          <h2>Feature Cards (Grid Layout)</h2>
+          <div class="features">
+            <div class="feature-card">
+              <i class="fas fa-bolt"></i>
+              <h3>Fast</h3>
+              <p>Optimized for performance</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-shield-alt"></i>
+              <h3>Type-Safe</h3>
+              <p>Full TypeScript support</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-puzzle-piece"></i>
+              <h3>Modular</h3>
+              <p>Use only what you need</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test: Buttons -->
+        <div class="test-section">
+          <h2>Buttons (Stack on Mobile)</h2>
+          <div class="hero-buttons">
+            <a href="#" class="btn btn-primary">Primary Button</a>
+            <a href="#" class="btn btn-secondary">Secondary Button</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>&copy; 2024 ddb-lib contributors</p>
+      <div class="footer-links">
+        <a href="#">GitHub</a>
+        <a href="#">npm</a>
+        <a href="#">Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Viewport Indicator -->
+  <div class="viewport-indicator">
+    <span id="viewport-size">Desktop</span>
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    // Update viewport indicator
+    function updateViewportIndicator() {
+      const width = window.innerWidth;
+      const indicator = document.getElementById('viewport-size');
+      if (width <= 480) {
+        indicator.textContent = `Mobile (${width}px)`;
+      } else if (width <= 768) {
+        indicator.textContent = `Tablet (${width}px)`;
+      } else {
+        indicator.textContent = `Desktop (${width}px)`;
+      }
+    }
+
+    updateViewportIndicator();
+    window.addEventListener('resize', updateViewportIndicator);
+  </script>
+</body>
+
+</html>

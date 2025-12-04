@@ -1,6 +1,7 @@
 ---
 title: "Installation"
 description: "Install ddb-lib packages"
+type: docs
 weight: 10
 ---
 

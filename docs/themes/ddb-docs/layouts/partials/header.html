@@ -1,16 +1,45 @@
-<header class="site-header">
-  <nav class="navbar">
+<header class="site-header" role="banner">
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
     <div class="navbar-brand">
-      <a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
+      <a href="{{ .Site.BaseURL }}" aria-label="Home - {{ .Site.Title }}">{{ .Site.Title }}</a>
     </div>
-    <div class="navbar-menu">
+
+    <!-- Mobile menu toggle -->
+    <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle navigation menu"
+      aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="navbar-menu" role="menubar">
       {{ range .Site.Menus.main }}
-      <a href="{{ .URL }}" class="nav-link">{{ .Name }}</a>
+      <a href="{{ .URL }}" class="nav-link" role="menuitem">{{ .Name }}</a>
       {{ end }}
     </div>
-    <div class="navbar-end">
-      <a href="{{ .Site.Params.github_repo }}" class="nav-link" target="_blank">
-        <i class="fab fa-github"></i>
+
+    <div class="navbar-right">
+      {{ if .Site.Params.search.enable }}
+      <div class="search-container" role="search">
+        <label for="search-input" class="sr-only">Search documentation</label>
+        <input type="search" id="search-input" class="search-input" placeholder="Search docs..."
+          aria-label="Search documentation" aria-describedby="search-hint">
+        <span id="search-hint" class="sr-only">Press Ctrl+K or Cmd+K to focus search</span>
+        <button id="search-button" class="search-button" aria-label="Submit search">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </button>
+        <div id="search-results" class="search-results" style="display: none;" role="listbox"
+          aria-label="Search results"></div>
+      </div>
+      {{ end }}
+
+      <!-- Theme toggle button -->
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+        <i class="fas fa-moon" aria-hidden="true"></i>
+      </button>
+
+      <a href="{{ .Site.Params.github_repo }}" class="nav-link" target="_blank" rel="noopener noreferrer"
+        aria-label="View on GitHub (opens in new tab)">
+        <i class="fab fa-github" aria-hidden="true"></i>
+        <span class="sr-only">GitHub</span>
       </a>
     </div>
   </nav>

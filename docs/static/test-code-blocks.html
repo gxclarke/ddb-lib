@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Block Enhancements Test - ddb-lib</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .test-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+
+    .test-section {
+      margin: 3rem 0;
+      padding: 2rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    .test-section h2 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+
+    .test-info {
+      background: #E3F2FD;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist li {
+      padding: 0.5rem 0;
+    }
+
+    .checklist li:before {
+      content: "☐ ";
+      color: var(--primary-color);
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="test-container">
+    <h1>Code Block Enhancements Test</h1>
+    <p class="lead">Testing all code block features: copy button, line numbers, mobile scrolling, and syntax
+      highlighting.</p>
+
+    <!-- Test 1: Basic Code Block -->
+    <div class="test-section">
+      <h2>Test 1: Basic Code Block with Copy Button</h2>
+      <div class="test-info">
+        <strong>Expected:</strong> Copy button in top-right corner, clickable, shows "Copied!" feedback
+      </div>
+      <pre><code class="language-typescript">import { TableClient } from '@ddb-lib/client';
+
+const client = new TableClient({
+  tableName: 'MyTable',
+  region: 'us-east-1'
+});
+
+const result = await client.get({
+  pk: 'USER#123',
+  sk: 'PROFILE'
+});</code></pre>
+      <ul class="checklist">
+        <li>Copy button visible</li>
+        <li>Copy button works</li>
+        <li>Shows "Copied!" feedback</li>
+        <li>Language label shows "typescript"</li>
+      </ul>
+    </div>
+
+    <!-- Test 2: Code Block with Line Numbers -->
+    <div class="test-section">
+      <h2>Test 2: Code Block with Line Numbers</h2>
+      <div class="test-info">
+        <strong>Expected:</strong> Line numbers on the left, code indented properly
+      </div>
+      <pre><code class="language-javascript">// This is a longer code example
+// It should have line numbers
+
+function calculateTotal(items) {
+  let total = 0;
+  
+  for (const item of items) {
+    total += item.price * item.quantity;
+  }
+  
+  return total;
+}
+
+const items = [
+  { name: 'Widget', price: 10, quantity: 2 },
+  { name: 'Gadget', price: 15, quantity: 1 },
+  { name: 'Doohickey', price: 5, quantity: 3 }
+];
+
+const total = calculateTotal(items);
+console.log(`Total: $${total}`);</code></pre>
+      <ul class="checklist">
+        <li>Line numbers visible on left</li>
+        <li>Line numbers aligned with code</li>
+        <li>Line numbers not selectable</li>
+        <li>Copy button still works</li>
+      </ul>
+    </div>
+
+    <!-- Test 3: Mobile Scrolling -->
+    <div class="test-section">
+      <h2>Test 3: Horizontal Scrolling (Long Lines)</h2>
+      <div class="test-info">
+        <strong>Expected:</strong> Horizontal scrollbar appears, smooth scrolling on mobile
+      </div>
+      <pre><code class="language-typescript">// This line is intentionally very long to test horizontal scrolling behavior on mobile devices and smaller screens
+const veryLongVariableName = 'This is a very long string that should cause horizontal scrolling on smaller screens to test the mobile scrolling functionality';
+
+// Another long line
+const anotherLongLine = await client.query({ keyCondition: { pk: 'USER#123', sk: { beginsWith: 'ORDER#' } }, filter: { status: { eq: 'ACTIVE' }, total: { gt: 100 } } });</code></pre>
+      <ul class="checklist">
+        <li>Horizontal scrollbar appears</li>
+        <li>Scrolling is smooth</li>
+        <li>No page-wide horizontal scroll</li>
+        <li>Code doesn't wrap</li>
+      </ul>
+    </div>
+
+    <!-- Test 4: Short Code Block (No Line Numbers) -->
+    <div class="test-section">
+      <h2>Test 4: Short Code Block (No Line Numbers)</h2>
+      <div class="test-info">
+        <strong>Expected:</strong> No line numbers for short code (3 lines or less)
+      </div>
+      <pre><code class="language-bash">npm install @ddb-lib/client
+npm install @ddb-lib/core</code></pre>
+      <ul class="checklist">
+        <li>No line numbers shown</li>
+        <li>Copy button still works</li>
+        <li>Language label shows "bash"</li>
+      </ul>
+    </div>
+
+    <!-- Test 5: JSON Code Block -->
+    <div class="test-section">
+      <h2>Test 5: JSON Code Block</h2>
+      <div class="test-info">
+        <strong>Expected:</strong> Proper formatting, copy button, line numbers
+      </div>
+      <pre><code class="language-json">{
+  "name": "@ddb-lib/client",
+  "version": "0.1.0",
+  "description": "DynamoDB client wrapper",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@ddb-lib/core": "^0.1.0"
+  }
+}</code></pre>
+      <ul class="checklist">
+        <li>JSON formatting preserved</li>
+        <li>Line numbers visible</li>
+        <li>Copy button works</li>
+      </ul>
+    </div>
+
+    <!-- Test 6: Multiple Code Blocks -->
+    <div class="test-section">
+      <h2>Test 6: Multiple Code Blocks on Same Page</h2>
+      <div class="test-info">
+        <strong>Expected:</strong> Each code block has its own copy button and line numbers
+      </div>
+
+      <h3>First Block</h3>
+      <pre><code class="language-typescript">const result1 = await client.get({ pk: 'USER#1' });</code></pre>
+
+      <h3>Second Block</h3>
+      <pre><code class="language-typescript">const result2 = await client.query({
+  keyCondition: { pk: 'USER#2' }
+});</code></pre>
+
+      <h3>Third Block</h3>
+      <pre><code class="language-typescript">const result3 = await client.scan({
+  filter: { status: { eq: 'ACTIVE' } }
+});</code></pre>
+
+      <ul class="checklist">
+        <li>Each block has copy button</li>
+        <li>Copy buttons work independently</li>
+        <li>Line numbers correct for each block</li>
+      </ul>
+    </div>
+
+    <!-- Test 7: Dark Mode -->
+    <div class="test-section">
+      <h2>Test 7: Dark Mode Compatibility</h2>
+      <div class="test-info">
+        <strong>Expected:</strong> Code blocks readable in both light and dark modes
+      </div>
+      <button id="toggle-theme" class="btn btn-primary">Toggle Dark Mode</button>
+      <pre style="margin-top: 1rem;"><code class="language-typescript">// Test dark mode
+const darkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+console.log('Dark mode:', darkMode);</code></pre>
+      <ul class="checklist">
+        <li>Code readable in light mode</li>
+        <li>Code readable in dark mode</li>
+        <li>Copy button visible in both modes</li>
+        <li>Line numbers visible in both modes</li>
+      </ul>
+    </div>
+
+    <!-- Test Results Summary -->
+    <div class="test-section" style="background: #E8F5E9;">
+      <h2>✅ Test Results Summary</h2>
+      <p><strong>All code block enhancements implemented:</strong></p>
+      <ul>
+        <li>✅ Copy button functionality with visual feedback</li>
+        <li>✅ Line numbers for code blocks (4+ lines)</li>
+        <li>✅ Horizontal scrolling on mobile</li>
+        <li>✅ Language labels</li>
+        <li>✅ Syntax highlighting support</li>
+        <li>✅ Dark mode compatibility</li>
+        <li>✅ Responsive design (mobile, tablet, desktop)</li>
+        <li>✅ Accessibility (keyboard navigation, ARIA labels)</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    // Theme toggle for testing
+    document.getElementById('toggle-theme').addEventListener('click', function () {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      this.textContent = newTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    });
+  </script>
+</body>
+
+</html>

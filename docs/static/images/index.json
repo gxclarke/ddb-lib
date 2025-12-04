@@ -1,0 +1,169 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-03",
+  "images": {
+    "architecture": [
+      {
+        "filename": "package-dependencies.svg",
+        "title": "Package Dependency Graph",
+        "description": "Shows the dependency graph between all ddb-lib packages",
+        "altText": "Package dependency graph showing relationships between core, stats, client, and amplify packages",
+        "dimensions": "800x600",
+        "usage": ["overview/architecture"],
+        "tags": ["architecture", "packages", "dependencies"]
+      },
+      {
+        "filename": "monorepo-structure.svg",
+        "title": "Monorepo Structure",
+        "description": "Visual representation of the monorepo file structure",
+        "altText": "Monorepo directory structure showing packages, docs, and examples folders",
+        "dimensions": "600x700",
+        "usage": ["overview/architecture", "contributing"],
+        "tags": ["architecture", "monorepo", "structure"]
+      }
+    ],
+    "patterns": [
+      {
+        "filename": "entity-keys.svg",
+        "title": "Entity Key Pattern",
+        "description": "Illustrates the entity key pattern structure",
+        "altText": "Entity key pattern showing ENTITY_TYPE#ID structure with examples",
+        "dimensions": "700x400",
+        "usage": ["patterns/entity-keys"],
+        "tags": ["pattern", "keys", "entity"]
+      },
+      {
+        "filename": "composite-keys.svg",
+        "title": "Composite Key Pattern",
+        "description": "Shows how composite keys combine multiple parts",
+        "altText": "Composite key pattern demonstrating hierarchical key structure with query flexibility",
+        "dimensions": "800x450",
+        "usage": ["patterns/composite-keys"],
+        "tags": ["pattern", "keys", "composite", "hierarchical"]
+      },
+      {
+        "filename": "time-series.svg",
+        "title": "Time-Series Pattern",
+        "description": "Demonstrates time-series key pattern with timeline",
+        "altText": "Time-series pattern showing entity ID combined with ISO 8601 timestamp",
+        "dimensions": "800x500",
+        "usage": ["patterns/time-series"],
+        "tags": ["pattern", "time-series", "timestamp"]
+      },
+      {
+        "filename": "hierarchical.svg",
+        "title": "Hierarchical Pattern",
+        "description": "File system-like hierarchical structure",
+        "altText": "Hierarchical pattern showing file system structure with path notation",
+        "dimensions": "700x600",
+        "usage": ["patterns/hierarchical"],
+        "tags": ["pattern", "hierarchical", "filesystem"]
+      },
+      {
+        "filename": "adjacency-list.svg",
+        "title": "Adjacency List Pattern",
+        "description": "Graph relationships using adjacency list pattern",
+        "altText": "Adjacency list pattern for modeling relationships and graphs in DynamoDB",
+        "dimensions": "800x600",
+        "usage": ["patterns/adjacency-list"],
+        "tags": ["pattern", "graph", "relationships", "adjacency"]
+      },
+      {
+        "filename": "sparse-indexes.svg",
+        "title": "Sparse Index Pattern",
+        "description": "Comparison of dense vs sparse indexes",
+        "altText": "Sparse index pattern showing selective indexing of items with specific attributes",
+        "dimensions": "900x550",
+        "usage": ["patterns/sparse-indexes"],
+        "tags": ["pattern", "index", "sparse", "gsi"]
+      },
+      {
+        "filename": "multi-attribute-keys.svg",
+        "title": "Multi-Attribute Key Pattern",
+        "description": "Multi-attribute key pattern with query levels",
+        "altText": "Multi-attribute key pattern combining multiple attributes for flexible hierarchical queries",
+        "dimensions": "800x650",
+        "usage": ["patterns/multi-attribute-keys"],
+        "tags": ["pattern", "keys", "multi-attribute", "hierarchical"]
+      }
+    ],
+    "comparisons": [
+      {
+        "filename": "query-vs-scan.svg",
+        "title": "Query vs Scan Performance",
+        "description": "Performance comparison between Query and Scan operations",
+        "altText": "Query vs Scan performance comparison showing efficiency differences",
+        "dimensions": "900x600",
+        "usage": ["best-practices/query-vs-scan", "anti-patterns/table-scans"],
+        "tags": ["comparison", "query", "scan", "performance"]
+      },
+      {
+        "filename": "hot-partition.svg",
+        "title": "Hot Partition Problem",
+        "description": "Hot partition problem vs distributed solution",
+        "altText": "Hot partition anti-pattern compared to distributed key solution",
+        "dimensions": "900x550",
+        "usage": ["anti-patterns/hot-partitions", "patterns/hot-partition-distribution"],
+        "tags": ["comparison", "anti-pattern", "hot-partition", "distribution"]
+      },
+      {
+        "filename": "projection-expressions.svg",
+        "title": "Projection Expressions",
+        "description": "Benefits of using projection expressions",
+        "altText": "Projection expressions comparison showing reduced data transfer and RCU consumption",
+        "dimensions": "900x600",
+        "usage": ["best-practices/projection-expressions"],
+        "tags": ["comparison", "projection", "performance", "rcu"]
+      },
+      {
+        "filename": "batch-operations.svg",
+        "title": "Batch Operations",
+        "description": "Individual requests vs batch operations",
+        "altText": "Batch operations comparison showing reduced API calls and improved performance",
+        "dimensions": "900x650",
+        "usage": ["best-practices/batch-operations"],
+        "tags": ["comparison", "batch", "performance", "api"]
+      }
+    ],
+    "workflows": [
+      {
+        "filename": "batch-operation.svg",
+        "title": "Batch Operation Flow",
+        "description": "Flow diagram for batch operation processing",
+        "altText": "Batch operation workflow showing chunking, processing, and retry logic",
+        "dimensions": "800x700",
+        "usage": ["guides/batch-operations"],
+        "tags": ["workflow", "batch", "flow", "process"]
+      },
+      {
+        "filename": "transaction-flow.svg",
+        "title": "Transaction Flow",
+        "description": "DynamoDB transaction flow with ACID properties",
+        "altText": "Transaction flow diagram showing validation, commit, and rollback paths",
+        "dimensions": "900x650",
+        "usage": ["guides/transactions"],
+        "tags": ["workflow", "transaction", "acid", "flow"]
+      }
+    ]
+  },
+  "metadata": {
+    "totalImages": 15,
+    "format": "SVG",
+    "colorPalette": {
+      "primaryBlue": "#2196F3",
+      "green": "#4CAF50",
+      "orange": "#FF9800",
+      "red": "#F44336",
+      "yellow": "#FFF9C4",
+      "lightBlue": "#E3F2FD",
+      "lightGreen": "#E8F5E9",
+      "lightRed": "#FFEBEE"
+    },
+    "accessibility": {
+      "wcagLevel": "AA",
+      "altTextRequired": true,
+      "colorContrastCompliant": true,
+      "keyboardNavigable": true
+    }
+  }
+}

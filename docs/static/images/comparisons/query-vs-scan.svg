@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <defs>
+    <style>
+      .good { fill: #E8F5E9; stroke: #4CAF50; stroke-width: 3; }
+      .bad { fill: #FFEBEE; stroke: #F44336; stroke-width: 3; }
+      .item { fill: #E3F2FD; stroke: #1976D2; stroke-width: 1.5; }
+      .item-examined { fill: #FFF9C4; stroke: #F57C00; stroke-width: 2; }
+      .item-returned { fill: #C8E6C9; stroke: #2E7D32; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; }
+      .label { font-family: Arial, sans-serif; font-size: 12px; fill: #666; }
+      .metric { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; }
+      .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+  
+  <text class="title" x="450" y="35" text-anchor="middle">Query vs Scan Performance</text>
+  
+  <!-- GOOD: Query -->
+  <rect class="good" x="50" y="60" width="380" height="480" rx="10"/>
+  <text class="title" x="240" y="95" text-anchor="middle" fill="#2E7D32">✓ Query Operation</text>
+  
+  <!-- Query visualization -->
+  <text class="label" x="240" y="125" text-anchor="middle">Targets specific partition</text>
+  
+  <!-- Partition key -->
+  <rect x="120" y="145" width="240" height="40" rx="5" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/>
+  <text class="text" x="240" y="170" fill="#fff">PK = USER#alice</text>
+  
+  <!-- Items in partition -->
+  <text class="label" x="240" y="210" text-anchor="middle">Items examined: 5</text>
+  
+  <rect class="item-examined" x="120" y="220" width="240" height="30" rx="3"/>
+  <text class="text" x="240" y="240" font-size="12">ORDER#2024-001</text>
+  
+  <rect class="item-examined" x="120" y="255" width="240" height="30" rx="3"/>
+  <text class="text" x="240" y="275" font-size="12">ORDER#2024-002</text>
+  
+  <rect class="item-examined" x="120" y="290" width="240" height="30" rx="3"/>
+  <text class="text" x="240" y="310" font-size="12">ORDER#2024-003</text>
+  
+  <rect class="item-examined" x="120" y="325" width="240" height="30" rx="3"/>
+  <text class="text" x="240" y="345" font-size="12">ORDER#2024-004</text>
+  
+  <rect class="item-examined" x="120" y="360" width="240" height="30" rx="3"/>
+  <text class="text" x="240" y="380" font-size="12">ORDER#2024-005</text>
+  
+  <!-- Metrics -->
+  <text class="label" x="240" y="415" text-anchor="middle">Items returned: 5</text>
+  <text class="metric" x="240" y="440" text-anchor="middle" fill="#2E7D32">RCU consumed: 5</text>
+  <text class="metric" x="240" y="465" text-anchor="middle" fill="#2E7D32">Latency: ~10ms</text>
+  <text class="metric" x="240" y="490" text-anchor="middle" fill="#2E7D32">Efficiency: 100%</text>
+  
+  <!-- BAD: Scan -->
+  <rect class="bad" x="470" y="60" width="380" height="480" rx="10"/>
+  <text class="title" x="660" y="95" text-anchor="middle" fill="#C62828">✗ Scan Operation</text>
+  
+  <!-- Scan visualization -->
+  <text class="label" x="660" y="125" text-anchor="middle">Examines entire table</text>
+  
+  <!-- All items (showing subset) -->
+  <text class="label" x="660" y="155" text-anchor="middle">Items examined: 1,000</text>
+  
+  <rect class="item" x="540" y="170" width="240" height="25" rx="3"/>
+  <text class="text" x="660" y="187" font-size="11">USER#bob#ORDER#001</text>
+  
+  <rect class="item" x="540" y="200" width="240" height="25" rx="3"/>
+  <text class="text" x="660" y="217" font-size="11">USER#charlie#ORDER#001</text>
+  
+  <rect class="item-returned" x="540" y="230" width="240" height="25" rx="3"/>
+  <text class="text" x="660" y="247" font-size="11">USER#alice#ORDER#001 ✓</text>
+  
+  <rect class="item" x="540" y="260" width="240" height="25" rx="3"/>
+  <text class="text" x="660" y="277" font-size="11">USER#david#ORDER#001</text>
+  
+  <rect class="item-returned" x="540" y="290" width="240" height="25" rx="3"/>
+  <text class="text" x="660" y="307" font-size="11">USER#alice#ORDER#002 ✓</text>
+  
+  <text class="text" x="660" y="330" font-size="16">...</text>
+  <text class="label" x="660" y="350" font-size="11">(995 more items scanned)</text>
+  
+  <rect class="item-returned" x="540" y="365" width="240" height="25" rx="3"/>
+  <text class="text" x="660" y="382" font-size="11">USER#alice#ORDER#005 ✓</text>
+  
+  <!-- Metrics -->
+  <text class="label" x="660" y="415" text-anchor="middle">Items returned: 5</text>
+  <text class="metric" x="660" y="440" text-anchor="middle" fill="#C62828">RCU consumed: 1,000</text>
+  <text class="metric" x="660" y="465" text-anchor="middle" fill="#C62828">Latency: ~500ms</text>
+  <text class="metric" x="660" y="490" text-anchor="middle" fill="#C62828">Efficiency: 0.5%</text>
+  
+  <!-- Bottom comparison -->
+  <text class="label" x="450" y="565" text-anchor="middle" font-weight="bold">
+    Query is 200x more efficient and 50x faster!
+  </text>
+</svg>

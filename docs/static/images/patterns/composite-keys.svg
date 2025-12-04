@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <style>
+      .box { fill: #fff; stroke: #333; stroke-width: 2; }
+      .part { fill: #2196F3; stroke: #1565C0; stroke-width: 2; }
+      .separator { fill: #FF9800; stroke: #E65100; stroke-width: 2; }
+      .result { fill: #4CAF50; stroke: #2E7D32; stroke-width: 2; }
+      .text { font-family: 'Courier New', monospace; font-size: 14px; text-anchor: middle; }
+      .label { font-family: Arial, sans-serif; font-size: 13px; fill: #666; }
+      .title { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; }
+      .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+  
+  <text class="title" x="400" y="40" text-anchor="middle">Composite Key Pattern</text>
+  
+  <!-- Pattern Structure -->
+  <text class="label" x="400" y="75" text-anchor="middle">Structure: PART1 # PART2 # PART3 # ...</text>
+  
+  <!-- Part 1 -->
+  <rect class="part" x="80" y="110" width="120" height="50" rx="5"/>
+  <text class="text" x="140" y="140">USER</text>
+  <text class="label" x="140" y="175">Part 1</text>
+  
+  <!-- Separator 1 -->
+  <rect class="separator" x="210" y="110" width="30" height="50" rx="5"/>
+  <text class="text" x="225" y="140" font-size="20">#</text>
+  
+  <!-- Part 2 -->
+  <rect class="part" x="250" y="110" width="120" height="50" rx="5"/>
+  <text class="text" x="310" y="140">alice</text>
+  <text class="label" x="310" y="175">Part 2</text>
+  
+  <!-- Separator 2 -->
+  <rect class="separator" x="380" y="110" width="30" height="50" rx="5"/>
+  <text class="text" x="395" y="140" font-size="20">#</text>
+  
+  <!-- Part 3 -->
+  <rect class="part" x="420" y="110" width="120" height="50" rx="5"/>
+  <text class="text" x="480" y="140">ORDER</text>
+  <text class="label" x="480" y="175">Part 3</text>
+  
+  <!-- Separator 3 -->
+  <rect class="separator" x="550" y="110" width="30" height="50" rx="5"/>
+  <text class="text" x="565" y="140" font-size="20">#</text>
+  
+  <!-- Part 4 -->
+  <rect class="part" x="590" y="110" width="120" height="50" rx="5"/>
+  <text class="text" x="650" y="140">2024-001</text>
+  <text class="label" x="650" y="175">Part 4</text>
+  
+  <!-- Arrow -->
+  <path class="arrow" d="M 400 160 L 400 210"/>
+  
+  <!-- Result -->
+  <rect class="result" x="150" y="220" width="500" height="60" rx="5"/>
+  <text class="text" x="400" y="255" font-size="16">USER#alice#ORDER#2024-001</text>
+  <text class="label" x="400" y="300">Complete Composite Key</text>
+  
+  <!-- Query Examples -->
+  <text class="label" x="50" y="340" text-anchor="start" font-weight="bold">Query Flexibility:</text>
+  
+  <rect class="box" x="50" y="355" width="700" height="30" rx="3" fill="#E8F5E9"/>
+  <text class="text" x="60" y="375" text-anchor="start" font-size="12">beginsWith("USER#alice#") → All orders for alice</text>
+  
+  <rect class="box" x="50" y="390" width="700" height="30" rx="3" fill="#E3F2FD"/>
+  <text class="text" x="60" y="410" text-anchor="start" font-size="12">beginsWith("USER#alice#ORDER#") → All alice's orders</text>
+  
+  <rect class="box" x="50" y="425" width="700" height="30" rx="3" fill="#FFF3E0"/>
+  <text class="text" x="60" y="445" text-anchor="start" font-size="12">equals("USER#alice#ORDER#2024-001") → Specific order</text>
+</svg>

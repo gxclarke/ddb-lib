@@ -25,9 +25,12 @@ Hugo-based documentation site for the ddb-lib monorepo.
    - Packages overview with comparison table
    - Comparison with alternatives
 
-4. **Getting Started** (Partial)
+4. **Getting Started** (Complete)
    - Getting started index
    - Installation guide
+   - Standalone quick start
+   - Amplify quick start
+   - First application tutorial
 
 5. **GitHub Actions Workflow**
    - Deployment workflow created
@@ -36,11 +39,6 @@ Hugo-based documentation site for the ddb-lib monorepo.
 ### 🚧 To Complete
 
 The following content pages need to be created. Use the existing pages as templates:
-
-#### Getting Started
-- `docs/content/getting-started/standalone.md` - Standalone quick start
-- `docs/content/getting-started/amplify.md` - Amplify quick start
-- `docs/content/getting-started/first-app.md` - First application tutorial
 
 #### Guides
 - Create `docs/content/guides/` directory structure

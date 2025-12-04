@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400">
+  <defs>
+    <style>
+      .box { fill: #fff; stroke: #333; stroke-width: 2; }
+      .key { fill: #4CAF50; stroke: #2E7D32; stroke-width: 2; }
+      .separator { fill: #FF9800; stroke: #E65100; stroke-width: 2; }
+      .id { fill: #2196F3; stroke: #1565C0; stroke-width: 2; }
+      .text { font-family: 'Courier New', monospace; font-size: 16px; text-anchor: middle; }
+      .label { font-family: Arial, sans-serif; font-size: 14px; fill: #666; }
+      .title { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; }
+      .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+  
+  <text class="title" x="350" y="40" text-anchor="middle">Entity Key Pattern</text>
+  
+  <!-- Pattern Structure -->
+  <text class="label" x="350" y="80" text-anchor="middle">Structure: ENTITY_TYPE # UNIQUE_ID</text>
+  
+  <!-- Entity Type Box -->
+  <rect class="key" x="100" y="120" width="150" height="60" rx="5"/>
+  <text class="text" x="175" y="155">USER</text>
+  <text class="label" x="175" y="200">Entity Type</text>
+  
+  <!-- Separator -->
+  <rect class="separator" x="270" y="120" width="40" height="60" rx="5"/>
+  <text class="text" x="290" y="155" font-size="24">#</text>
+  <text class="label" x="290" y="200">Separator</text>
+  
+  <!-- ID Box -->
+  <rect class="id" x="330" y="120" width="150" height="60" rx="5"/>
+  <text class="text" x="405" y="155">12345</text>
+  <text class="label" x="405" y="200">Unique ID</text>
+  
+  <!-- Arrow to result -->
+  <path class="arrow" d="M 290 180 L 290 230"/>
+  
+  <!-- Result -->
+  <rect class="box" x="150" y="240" width="280" height="60" rx="5"/>
+  <text class="text" x="290" y="275" font-size="18">USER#12345</text>
+  <text class="label" x="290" y="320">Complete Entity Key</text>
+  
+  <!-- Examples -->
+  <text class="label" x="50" y="360" text-anchor="start" font-weight="bold">Examples:</text>
+  <text class="text" x="50" y="385" text-anchor="start" font-size="14">USER#alice  |  ORDER#2024-001  |  PRODUCT#laptop-15</text>
+</svg>

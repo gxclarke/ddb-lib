@@ -1,0 +1,11 @@
+<div class="pattern-diagram my-4 text-center">
+  {{ if .Get "title" }}
+  <h5>{{ .Get "title" }}</h5>
+  {{ end }}
+  <div class="diagram-content p-3 border rounded bg-light">
+    {{ .Inner | markdownify }}
+  </div>
+  {{ if .Get "caption" }}
+  <p class="text-muted mt-2"><em>{{ .Get "caption" }}</em></p>
+  {{ end }}
+</div>

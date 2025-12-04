@@ -1,0 +1,68 @@
+{{ define "head-end" }}
+<!-- SEO: Enhanced Meta Tags -->
+{{ if .Description }}
+<meta name="description" content="{{ .Description }}">
+{{ else if .Summary }}
+<meta name="description" content="{{ .Summary }}">
+{{ end }}
+
+{{ if .Keywords }}
+<meta name="keywords" content="{{ delimit .Keywords " , " }}">
+{{ else if .Params.tags }}
+<meta name="keywords" content="{{ delimit .Params.tags " , " }}">
+{{ end }}
+
+<meta name="author" content="{{ .Site.Params.copyright }}">
+<link rel="canonical" href="{{ .Permalink }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+{{ if .Description }}
+<meta property="og:description" content="{{ .Description }}">
+{{ else if .Summary }}
+<meta property="og:description" content="{{ .Summary }}">
+{{ else }}
+<meta property="og:description" content="{{ .Site.Params.description }}">
+{{ end }}
+<meta property="og:site_name" content="{{ .Site.Title }}">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ .Permalink }}">
+<meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+{{ if .Description }}
+<meta name="twitter:description" content="{{ .Description }}">
+{{ else if .Summary }}
+<meta name="twitter:description" content="{{ .Summary }}">
+{{ else }}
+<meta name="twitter:description" content="{{ .Site.Params.description }}">
+{{ end }}
+
+<!-- SEO: Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "{{ if .IsHome }}WebSite{{ else }}WebPage{{ end }}",
+  "name": "{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}",
+  "url": "{{ .Permalink }}",
+  "description": "{{ if .Description }}{{ .Description }}{{ else if .Summary }}{{ .Summary }}{{ else }}{{ .Site.Params.description }}{{ end }}",
+  {{ if .IsHome }}
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ .Site.BaseURL }}search/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  {{ end }}
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ .Site.Title }}",
+    "url": "{{ .Site.BaseURL }}"
+  }
+}
+</script>
+
+<!-- Accessibility: Color scheme -->
+<meta name="color-scheme" content="light dark">
+{{ end }}

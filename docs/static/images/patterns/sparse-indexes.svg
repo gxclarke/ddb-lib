@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550">
+  <defs>
+    <style>
+      .table { fill: #E3F2FD; stroke: #1976D2; stroke-width: 2; }
+      .index { fill: #C8E6C9; stroke: #388E3C; stroke-width: 2; }
+      .item { fill: #FFF; stroke: #999; stroke-width: 1; }
+      .item-indexed { fill: #FFF9C4; stroke: #F57C00; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; }
+      .label { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }
+      .code { font-family: 'Courier New', monospace; font-size: 10px; }
+      .arrow { fill: none; stroke: #F57C00; stroke-width: 2; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#F57C00" />
+    </marker>
+  </defs>
+  
+  <text class="title" x="450" y="35" text-anchor="middle">Sparse Index Pattern</text>
+  <text class="label" x="450" y="60" text-anchor="middle">Index only items with specific attributes</text>
+  
+  <!-- Base Table -->
+  <rect class="table" x="50" y="90" width="350" height="400" rx="10"/>
+  <text class="title" x="225" y="120" text-anchor="middle" font-size="16">Base Table (1000 items)</text>
+  
+  <!-- Table items -->
+  <rect class="item" x="70" y="140" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="160" text-anchor="start">USER#1 | status: active</text>
+  
+  <rect class="item" x="70" y="175" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="195" text-anchor="start">USER#2 | status: inactive</text>
+  
+  <rect class="item-indexed" x="70" y="210" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="230" text-anchor="start">USER#3 | status: active | premium: true</text>
+  
+  <rect class="item" x="70" y="245" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="265" text-anchor="start">USER#4 | status: active</text>
+  
+  <rect class="item-indexed" x="70" y="280" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="300" text-anchor="start">USER#5 | status: active | premium: true</text>
+  
+  <rect class="item" x="70" y="315" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="335" text-anchor="start">USER#6 | status: deleted</text>
+  
+  <rect class="item-indexed" x="70" y="350" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="370" text-anchor="start">USER#7 | status: active | premium: true</text>
+  
+  <rect class="item" x="70" y="385" width="310" height="30" rx="3"/>
+  <text class="code" x="80" y="405" text-anchor="start">USER#8 | status: inactive</text>
+  
+  <text class="label" x="225" y="435" text-anchor="middle">...</text>
+  <text class="label" x="225" y="455" text-anchor="middle">(992 more items)</text>
+  
+  <!-- Arrows -->
+  <path class="arrow" d="M 380 225 L 470 180"/>
+  <path class="arrow" d="M 380 295 L 470 200"/>
+  <path class="arrow" d="M 380 365 L 470 220"/>
+  
+  <!-- GSI (Sparse Index) -->
+  <rect class="index" x="500" y="90" width="350" height="250" rx="10"/>
+  <text class="title" x="675" y="120" text-anchor="middle" font-size="16">GSI: Premium Users (50 items)</text>
+  <text class="label" x="675" y="140" text-anchor="middle">Only items with "premium" attribute</text>
+  
+  <!-- Index items -->
+  <rect class="item-indexed" x="520" y="160" width="310" height="30" rx="3"/>
+  <text class="code" x="530" y="180" text-anchor="start">GSI_PK: PREMIUM | SK: USER#3</text>
+  
+  <rect class="item-indexed" x="520" y="195" width="310" height="30" rx="3"/>
+  <text class="code" x="530" y="215" text-anchor="start">GSI_PK: PREMIUM | SK: USER#5</text>
+  
+  <rect class="item-indexed" x="520" y="230" width="310" height="30" rx="3"/>
+  <text class="code" x="530" y="250" text-anchor="start">GSI_PK: PREMIUM | SK: USER#7</text>
+  
+  <text class="label" x="675" y="275" text-anchor="middle">...</text>
+  <text class="label" x="675" y="295" text-anchor="middle">(47 more premium users)</text>
+  
+  <!-- Benefits box -->
+  <rect x="500" y="360" width="350" height="130" rx="5" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
+  <text class="text" x="675" y="385" font-weight="bold">Benefits:</text>
+  <text class="label" x="510" y="410" text-anchor="start">✓ Query only premium users (50 items vs 1000)</text>
+  <text class="label" x="510" y="430" text-anchor="start">✓ 20x faster queries</text>
+  <text class="label" x="510" y="450" text-anchor="start">✓ 20x less RCU consumed</text>
+  <text class="label" x="510" y="470" text-anchor="start">✓ No filter expressions needed</text>
+  
+  <!-- Legend -->
+  <rect x="70" y="510" width="15" height="15" fill="#FFF" stroke="#999"/>
+  <text class="label" x="90" y="522" text-anchor="start">Regular item (not in GSI)</text>
+  
+  <rect x="300" y="510" width="15" height="15" fill="#FFF9C4" stroke="#F57C00" stroke-width="2"/>
+  <text class="label" x="320" y="522" text-anchor="start">Item with premium attribute (in GSI)</text>
+</svg>

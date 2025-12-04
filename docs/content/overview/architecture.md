@@ -1,6 +1,7 @@
 ---
 title: "Architecture"
 description: "Understanding the ddb-lib architecture and design principles"
+type: docs
 weight: 10
 ---
 
