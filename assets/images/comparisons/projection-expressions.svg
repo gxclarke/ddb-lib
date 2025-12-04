@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <defs>
+    <style>
+      .bad { fill: #FFEBEE; stroke: #F44336; stroke-width: 3; }
+      .good { fill: #E8F5E9; stroke: #4CAF50; stroke-width: 3; }
+      .item { fill: #FFF; stroke: #999; stroke-width: 1; }
+      .field-needed { fill: #C8E6C9; stroke: #388E3C; stroke-width: 2; }
+      .field-waste { fill: #FFCDD2; stroke: #C62828; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; }
+      .label { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }
+      .code { font-family: 'Courier New', monospace; font-size: 10px; }
+      .metric { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; }
+    </style>
+  </defs>
+  
+  <text class="title" x="450" y="35" text-anchor="middle">Projection Expressions: Fetch Only What You Need</text>
+  
+  <!-- BAD: No Projection -->
+  <rect class="bad" x="50" y="60" width="380" height="480" rx="10"/>
+  <text class="title" x="240" y="95" text-anchor="middle" fill="#C62828">✗ Without Projection</text>
+  
+  <text class="label" x="240" y="125" text-anchor="middle">Fetches entire item (all attributes)</text>
+  
+  <!-- Full item visualization -->
+  <rect class="item" x="80" y="150" width="320" height="320" rx="5"/>
+  
+  <rect class="field-needed" x="100" y="170" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="190" text-anchor="start">id: "USER#123"</text>
+  <text class="label" x="380" y="190" text-anchor="end" fill="#2E7D32">✓ needed</text>
+  
+  <rect class="field-needed" x="100" y="205" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="225" text-anchor="start">name: "Alice Johnson"</text>
+  <text class="label" x="380" y="225" text-anchor="end" fill="#2E7D32">✓ needed</text>
+  
+  <rect class="field-waste" x="100" y="240" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="260" text-anchor="start">email: "alice@example.com"</text>
+  <text class="label" x="380" y="260" text-anchor="end" fill="#C62828">✗ unused</text>
+  
+  <rect class="field-waste" x="100" y="275" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="295" text-anchor="start">phone: "+1-555-0123"</text>
+  <text class="label" x="380" y="295" text-anchor="end" fill="#C62828">✗ unused</text>
+  
+  <rect class="field-waste" x="100" y="310" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="330" text-anchor="start">address: "123 Main St..."</text>
+  <text class="label" x="380" y="330" text-anchor="end" fill="#C62828">✗ unused</text>
+  
+  <rect class="field-waste" x="100" y="345" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="365" text-anchor="start">bio: "Long biography text..."</text>
+  <text class="label" x="380" y="365" text-anchor="end" fill="#C62828">✗ unused</text>
+  
+  <rect class="field-waste" x="100" y="380" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="400" text-anchor="start">preferences: {...}</text>
+  <text class="label" x="380" y="400" text-anchor="end" fill="#C62828">✗ unused</text>
+  
+  <rect class="field-waste" x="100" y="415" width="280" height="30" rx="3"/>
+  <text class="code" x="110" y="435" text-anchor="start">metadata: {...}</text>
+  <text class="label" x="380" y="435" text-anchor="end" fill="#C62828">✗ unused</text>
+  
+  <!-- Metrics -->
+  <text class="label" x="240" y="490" text-anchor="middle">Item size: 8 KB</text>
+  <text class="metric" x="240" y="510" text-anchor="middle" fill="#C62828">RCU consumed: 2</text>
+  <text class="metric" x="240" y="530" text-anchor="middle" fill="#C62828">Network transfer: 8 KB</text>
+  
+  <!-- GOOD: With Projection -->
+  <rect class="good" x="470" y="60" width="380" height="480" rx="10"/>
+  <text class="title" x="660" y="95" text-anchor="middle" fill="#2E7D32">✓ With Projection</text>
+  
+  <text class="label" x="660" y="125" text-anchor="middle">Fetches only requested attributes</text>
+  
+  <!-- Projected item visualization -->
+  <rect class="item" x="500" y="150" width="320" height="100" rx="5"/>
+  
+  <rect class="field-needed" x="520" y="170" width="280" height="30" rx="3"/>
+  <text class="code" x="530" y="190" text-anchor="start">id: "USER#123"</text>
+  <text class="label" x="790" y="190" text-anchor="end" fill="#2E7D32">✓ needed</text>
+  
+  <rect class="field-needed" x="520" y="205" width="280" height="30" rx="3"/>
+  <text class="code" x="530" y="225" text-anchor="start">name: "Alice Johnson"</text>
+  <text class="label" x="790" y="225" text-anchor="end" fill="#2E7D32">✓ needed</text>
+  
+  <!-- Code example -->
+  <rect x="500" y="270" width="320" height="80" rx="5" fill="#F5F5F5" stroke="#999"/>
+  <text class="code" x="510" y="290" text-anchor="start" font-weight="bold">Query with projection:</text>
+  <text class="code" x="510" y="310" text-anchor="start">table.query({</text>
+  <text class="code" x="520" y="325" text-anchor="start">  keyCondition: {...},</text>
+  <text class="code" x="520" y="340" text-anchor="start">  projection: ['id', 'name']</text>
+  <text class="code" x="510" y="355" text-anchor="start">})</text>
+  
+  <!-- Metrics -->
+  <text class="label" x="660" y="380" text-anchor="middle">Item size: 1 KB</text>
+  <text class="metric" x="660" y="400" text-anchor="middle" fill="#2E7D32">RCU consumed: 1</text>
+  <text class="metric" x="660" y="420" text-anchor="middle" fill="#2E7D32">Network transfer: 1 KB</text>
+  
+  <!-- Savings -->
+  <rect x="500" y="440" width="320" height="90" rx="5" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
+  <text class="text" x="660" y="465" font-weight="bold">Savings:</text>
+  <text class="label" x="510" y="485" text-anchor="start">✓ 50% less RCU consumed</text>
+  <text class="label" x="510" y="505" text-anchor="start">✓ 87.5% less network transfer</text>
+  <text class="label" x="510" y="525" text-anchor="start">✓ Faster response times</text>
+  
+  <!-- Bottom note -->
+  <text class="label" x="450" y="570" text-anchor="middle" font-weight="bold">
+    Use projection expressions to reduce costs and improve performance
+  </text>
+</svg>

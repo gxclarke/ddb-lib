@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700">
+  <defs>
+    <style>
+      .box { fill: #E3F2FD; stroke: #1976D2; stroke-width: 2; }
+      .process { fill: #FFF9C4; stroke: #F57C00; stroke-width: 2; }
+      .success { fill: #C8E6C9; stroke: #388E3C; stroke-width: 2; }
+      .decision { fill: #FFE0B2; stroke: #E65100; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 13px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; }
+      .label { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }
+      .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+      .arrow-yes { fill: none; stroke: #4CAF50; stroke-width: 2; marker-end: url(#arrowhead-yes); }
+      .arrow-no { fill: none; stroke: #F44336; stroke-width: 2; marker-end: url(#arrowhead-no); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+    <marker id="arrowhead-yes" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#4CAF50" />
+    </marker>
+    <marker id="arrowhead-no" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#F44336" />
+    </marker>
+  </defs>
+  
+  <text class="title" x="400" y="35" text-anchor="middle">Batch Operation Flow</text>
+  
+  <!-- Start -->
+  <ellipse cx="400" cy="80" rx="80" ry="30" class="box"/>
+  <text class="text" x="400" y="85">Start Batch</text>
+  
+  <path class="arrow" d="M 400 110 L 400 150"/>
+  
+  <!-- Input items -->
+  <rect class="box" x="300" y="150" width="200" height="60" rx="5"/>
+  <text class="text" x="400" y="175">Input Items</text>
+  <text class="label" x="400" y="195">(e.g., 150 items)</text>
+  
+  <path class="arrow" d="M 400 210 L 400 250"/>
+  
+  <!-- Chunk into batches -->
+  <rect class="process" x="280" y="250" width="240" height="60" rx="5"/>
+  <text class="text" x="400" y="275">Chunk into Batches</text>
+  <text class="label" x="400" y="295">(25 items per batch)</text>
+  
+  <path class="arrow" d="M 400 310 L 400 350"/>
+  
+  <!-- Batches -->
+  <rect class="box" x="100" y="350" width="120" height="50" rx="5"/>
+  <text class="text" x="160" y="375">Batch 1</text>
+  <text class="label" x="160" y="390">(25 items)</text>
+  
+  <rect class="box" x="240" y="350" width="120" height="50" rx="5"/>
+  <text class="text" x="300" y="375">Batch 2</text>
+  <text class="label" x="300" y="390">(25 items)</text>
+  
+  <rect class="box" x="380" y="350" width="120" height="50" rx="5"/>
+  <text class="text" x="440" y="375">Batch 3</text>
+  <text class="label" x="440" y="390">(25 items)</text>
+  
+  <text class="text" x="530" y="375">...</text>
+  
+  <rect class="box" x="560" y="350" width="120" height="50" rx="5"/>
+  <text class="text" x="620" y="375">Batch 6</text>
+  <text class="label" x="620" y="390">(25 items)</text>
+  
+  <!-- Process batch -->
+  <path class="arrow" d="M 400 400 L 400 440"/>
+  
+  <rect class="process" x="280" y="440" width="240" height="60" rx="5"/>
+  <text class="text" x="400" y="465">Process Each Batch</text>
+  <text class="label" x="400" y="485">(Sequential or Parallel)</text>
+  
+  <path class="arrow" d="M 400 500 L 400 540"/>
+  
+  <!-- Check for unprocessed -->
+  <path d="M 400 540 L 480 580 L 400 620 L 320 580 Z" class="decision"/>
+  <text class="text" x="400" y="580">Unprocessed</text>
+  <text class="text" x="400" y="595">items?</text>
+  
+  <!-- Yes - retry -->
+  <path class="arrow-no" d="M 480 580 L 580 580 L 580 470 L 520 470"/>
+  <text class="label" x="550" y="575" fill="#F44336">Yes</text>
+  <text class="label" x="600" y="520">Retry with</text>
+  <text class="label" x="600" y="535">exponential</text>
+  <text class="label" x="600" y="550">backoff</text>
+  
+  <!-- No - success -->
+  <path class="arrow-yes" d="M 400 620 L 400 660"/>
+  <text class="label" x="420" y="645" fill="#4CAF50">No</text>
+  
+  <!-- Complete -->
+  <ellipse cx="400" cy="680" rx="80" ry="30" class="success"/>
+  <text class="text" x="400" y="685">Complete</text>
+  
+  <!-- Side notes -->
+  <rect x="50" y="50" width="200" height="120" rx="5" fill="#FFF3E0" stroke="#F57C00" stroke-width="1"/>
+  <text class="text" x="150" y="75" font-weight="bold">Key Features:</text>
+  <text class="label" x="60" y="95" text-anchor="start">• Auto-chunking</text>
+  <text class="label" x="60" y="115" text-anchor="start">• Retry logic</text>
+  <text class="label" x="60" y="135" text-anchor="start">• Error handling</text>
+  <text class="label" x="60" y="155" text-anchor="start">• Progress tracking</text>
+  
+  <rect x="550" y="50" width="200" height="100" rx="5" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
+  <text class="text" x="650" y="75" font-weight="bold">Benefits:</text>
+  <text class="label" x="560" y="95" text-anchor="start">• Reduced API calls</text>
+  <text class="label" x="560" y="115" text-anchor="start">• Better throughput</text>
+  <text class="label" x="560" y="135" text-anchor="start">• Cost efficient</text>
+</svg>

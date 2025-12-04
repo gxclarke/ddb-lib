@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 600">
+  <defs>
+    <style>
+      .node { fill: #E3F2FD; stroke: #1976D2; stroke-width: 2; }
+      .root { fill: #4CAF50; stroke: #2E7D32; stroke-width: 2; }
+      .folder { fill: #2196F3; stroke: #1565C0; stroke-width: 2; }
+      .file { fill: #FF9800; stroke: #E65100; stroke-width: 2; }
+      .text { font-family: 'Courier New', monospace; font-size: 12px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; }
+      .label { font-family: Arial, sans-serif; font-size: 11px; fill: #666; }
+      .line { stroke: #999; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <text class="title" x="350" y="35" text-anchor="middle">Hierarchical Pattern</text>
+  <text class="label" x="350" y="60" text-anchor="middle">File system-like structure using path notation</text>
+  
+  <!-- Root -->
+  <rect class="root" x="280" y="90" width="140" height="40" rx="5"/>
+  <text class="text" x="350" y="115" fill="#fff">root/</text>
+  
+  <!-- Level 1 -->
+  <line class="line" x1="350" y1="130" x2="200" y2="170"/>
+  <line class="line" x1="350" y1="130" x2="350" y2="170"/>
+  <line class="line" x1="350" y1="130" x2="500" y2="170"/>
+  
+  <rect class="folder" x="130" y="170" width="140" height="40" rx="5"/>
+  <text class="text" x="200" y="195" fill="#fff">root/documents/</text>
+  
+  <rect class="folder" x="280" y="170" width="140" height="40" rx="5"/>
+  <text class="text" x="350" y="195" fill="#fff">root/media/</text>
+  
+  <rect class="folder" x="430" y="170" width="140" height="40" rx="5"/>
+  <text class="text" x="500" y="195" fill="#fff">root/config/</text>
+  
+  <!-- Level 2 - documents -->
+  <line class="line" x1="200" y1="210" x2="150" y2="250"/>
+  <line class="line" x1="200" y1="210" x2="250" y2="250"/>
+  
+  <rect class="folder" x="80" y="250" width="140" height="40" rx="5"/>
+  <text class="text" x="150" y="270" fill="#fff" font-size="10">root/documents/</text>
+  <text class="text" x="150" y="283" fill="#fff" font-size="10">personal/</text>
+  
+  <rect class="folder" x="230" y="250" width="140" height="40" rx="5"/>
+  <text class="text" x="300" y="270" fill="#fff" font-size="10">root/documents/</text>
+  <text class="text" x="300" y="283" fill="#fff" font-size="10">work/</text>
+  
+  <!-- Level 2 - media -->
+  <line class="line" x1="350" y1="210" x2="300" y2="250"/>
+  <line class="line" x1="350" y1="210" x2="400" y2="250"/>
+  
+  <rect class="folder" x="230" y="330" width="140" height="40" rx="5"/>
+  <text class="text" x="300" y="350" fill="#fff" font-size="10">root/media/</text>
+  <text class="text" x="300" y="363" fill="#fff" font-size="10">photos/</text>
+  
+  <rect class="folder" x="380" y="330" width="140" height="40" rx="5"/>
+  <text class="text" x="450" y="350" fill="#fff" font-size="10">root/media/</text>
+  <text class="text" x="450" y="363" fill="#fff" font-size="10">videos/</text>
+  
+  <!-- Level 3 - files -->
+  <line class="line" x1="150" y1="290" x2="120" y2="330"/>
+  <line class="line" x1="150" y1="290" x2="180" y2="330"/>
+  
+  <rect class="file" x="50" y="410" width="140" height="35" rx="5"/>
+  <text class="text" x="120" y="428" font-size="10">resume.pdf</text>
+  
+  <rect class="file" x="200" y="410" width="140" height="35" rx="5"/>
+  <text class="text" x="270" y="428" font-size="10">letter.docx</text>
+  
+  <line class="line" x1="300" y1="290" x2="270" y2="330"/>
+  <line class="line" x1="300" y1="290" x2="330" y2="330"/>
+  
+  <rect class="file" x="200" y="460" width="140" height="35" rx="5"/>
+  <text class="text" x="270" y="478" font-size="10">report.pdf</text>
+  
+  <rect class="file" x="350" y="460" width="140" height="35" rx="5"/>
+  <text class="text" x="420" y="478" font-size="10">presentation.pptx</text>
+  
+  <!-- Query example -->
+  <rect x="50" y="520" width="600" height="70" rx="5" fill="#FFF9C4" stroke="#F57C00" stroke-width="2"/>
+  <text class="label" x="60" y="540" text-anchor="start" font-weight="bold">Query Example:</text>
+  <text class="text" x="60" y="560" text-anchor="start" font-size="11">
+    beginsWith("root/documents/") → Returns all documents
+  </text>
+  <text class="text" x="60" y="580" text-anchor="start" font-size="11">
+    beginsWith("root/documents/work/") → Returns only work documents
+  </text>
+</svg>
